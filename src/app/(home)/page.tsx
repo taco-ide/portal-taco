@@ -1,10 +1,10 @@
 "use client";
 
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import Hero from "@/components/home/Hero";
-import Features from "@/components/home/Features";
-import Collaborators from "@/components/home/Collaborators";
+import Header from "@/app/(home)/_components/layout/Header";
+import Footer from "@/app/(home)/_components/layout/Footer";
+import Hero from "@/app/(home)/_components/home/Hero";
+import Features from "@/app/(home)/_components/home/Features";
+import Collaborators from "@/app/(home)/_components/home/Collaborators";
 
 export default function Home() {
   return (

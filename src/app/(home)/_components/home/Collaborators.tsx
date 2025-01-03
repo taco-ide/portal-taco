@@ -14,7 +14,7 @@ const Collaborators = () => {
   return (
     <section className="relative py-32 overflow-hidden" id="colaboradores">
       <div className="absolute inset-0 bg-gradient-to-b from-[#2a2f3e] to-[#1a1f2e]"></div>
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
+      <div className="absolute inset-0"></div>
 
       <div className="container mx-auto px-4 relative">
         <div className="max-w-4xl mx-auto text-center mb-16">
