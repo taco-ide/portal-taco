@@ -8,12 +8,12 @@ const Footer = () => {
           <div className="flex items-center gap-3">
             <Image
               src="/taco-logo.png"
-              alt="TACO-IDE Logo"
+              alt="TACO Logo"
               width={40}
               height={40}
               className="rounded-lg"
             />
-            <span className="text-xl font-bold text-[#FFB800]">TACO-IDE</span>
+            <span className="text-xl font-bold text-[#FFB800]">TACO</span>
           </div>
           <div className="flex gap-8 text-gray-400">
             <a href="#recursos" className="hover:text-white transition-colors">
@@ -29,7 +29,7 @@ const Footer = () => {
             </a>
           </div>
           <p className="text-gray-500 text-sm">
-            &copy; 2024 TACO-IDE. Todos os direitos reservados.
+            &copy; 2024 TACO. Todos os direitos reservados.
           </p>
         </div>
       </div>

@@ -9,7 +9,7 @@ const Navbar = () => {
           <div className="rounded-xl overflow-hidden shadow-lg shadow-[#FFB800]/20 hover:shadow-[#FFB800]/30 transition-shadow duration-300">
             <Image
               src="/taco-logo.png"
-              alt="TACO-IDE Logo"
+              alt="TACO Logo"
               width={50}
               height={50}
               priority
@@ -17,7 +17,7 @@ const Navbar = () => {
             />
           </div>
           <span className="text-2xl font-bold bg-gradient-to-r from-[#FFB800] to-[#FFA000] text-transparent bg-clip-text">
-            TACO-IDE
+            TACO
           </span>
         </div>
         <Link href="/login" className="text-gray-300 hover:text-white transition-colors">Log-out</Link>

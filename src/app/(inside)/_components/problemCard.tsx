@@ -22,7 +22,7 @@ export interface ProblemCardProps {
 
 export default function ProblemCard( { id, title, description, difficulty, tags, author }: ProblemCardProps) {
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-[#1a1f2e] text-white">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
