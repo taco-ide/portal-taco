@@ -39,6 +39,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     getCode: () => get().editor?.getValue() || "",
 
     setEditor: (editor: Monaco) => {
+      // TODO: Save code based on the problem on the database
       const savedCode = localStorage.getItem(`editor-code-${get().language}`);
       if (savedCode) editor.setValue(savedCode);
 
@@ -84,6 +85,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
 
       try {
         const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
+        // TODO: update this to use our own API in the future
         const response = await fetch("https://emkc.org/api/v2/piston/execute", {
           method: "POST",
           headers: {
