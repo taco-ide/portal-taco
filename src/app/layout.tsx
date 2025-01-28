@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { JetBrains_Mono } from "next/font/google"
 import "./globals.css";
+
+const jetbrains = JetBrains_Mono({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: "TACO-IDE",
@@ -15,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`antialiased`}
+        className={`antialiased ${jetbrains.className} text-white bg-slate-900`}
       >
         {children}
       </body>
