@@ -6,17 +6,16 @@ const Hero = () => {
           <div className="inline-block animate-fadeIn">
             <h1 className="text-5xl sm:text-7xl font-bold mb-8 leading-tight">
               <span className="bg-gradient-to-r from-[#FFB800] to-[#FFA000] text-transparent bg-clip-text">
-                Aprenda Python
+                Learn How to Code
               </span>
               <br />
               <span className="bg-gradient-to-r from-white to-gray-300 text-transparent bg-clip-text">
-                com Inteligência Artificial
+                With Personalized AI Feedback
               </span>
             </h1>
           </div>
           <p className="text-xl sm:text-2xl mb-12 text-gray-300 animate-fadeInUp delay-200 leading-relaxed max-w-3xl mx-auto">
-            Uma plataforma open-source revolucionária que une professores,
-            alunos e IA para um aprendizado mais eficiente e personalizado.
+            A revolutionary open-source platform that unites teachers, students and AI for more efficient and personalized learning.
           </p>
           <div className="flex gap-6 justify-center items-center flex-wrap animate-fadeInUp delay-400">
             <a
@@ -47,7 +46,7 @@ const Hero = () => {
             >
               <div className="absolute inset-0 w-full h-full transition-all duration-300 bg-gradient-to-r from-[#4CAF50] to-[#45a049] group-hover:opacity-90"></div>
               <span className="relative flex items-center gap-2">
-                Saiba Mais
+                Info
                 <svg
                   className="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
                   fill="none"

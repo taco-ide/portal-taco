@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="flex flex-col items-center justify-center gap-6">
           <div className="flex items-center gap-3">
             <Image
-              src="/taco-logo.png"
+              src="/mini-logo.png"
               alt="TACO Logo"
               width={40}
               height={40}

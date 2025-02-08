@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="flex flex-col items-center justify-center gap-6">
           <div className="flex items-center gap-3">
             <Image
-              src="/taco-logo.png"
+              src="/mini-logo.png"
               alt="TACO-IDE Logo"
               width={40}
               height={40}
@@ -29,7 +29,7 @@ const Footer = () => {
             </a>
           </div>
           <p className="text-gray-500 text-sm">
-            &copy; 2024 TACO-IDE. Todos os direitos reservados.
+            &copy; 2025 TACO. Todos os direitos reservados.
           </p>
         </div>
       </div>
