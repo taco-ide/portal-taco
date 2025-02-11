@@ -6,37 +6,53 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRemarkSync } from 'react-remark';
+import React from "react";
 
 function ProblemDescription() {
   const problemDescription = `
-  # Description
-  
-  Problem Description
-  
-  # Input
-  
-  Input Description
-  
-  # Output
-  
-  Output Description
+# Reverse a String
 
-  # Sample Input
-  
-  Sample Input
-  
-  # Sample Output
-  
-  Sample Output
+## Problem Statement
+Write a function that takes a string as input and returns the string reversed.
 
-  # Constraints
-  
-  Constraints
+## Input
+- A single string s with length 1 ≤ |s| ≤ 10^5.
 
-  # Explanation
+## Output
+- The reversed string.
 
-  Explanation
-  `;
+## Examples
+### Example 1
+**Input:**  
+
+hello
+
+**Output:**  
+
+olleh
+
+
+### Example 2
+**Input:**  
+
+OpenAI
+**Output:** 
+IAnepO
+
+## Constraints
+- You cannot use built-in functions like reverse() or slicing tricks.
+- The function should run in O(n) time complexity.
+
+## Function Signature (Python)
+def reverse_string(s: str) -> str:
+    pass  # Implement this function
+
+## Notes
+- Consider using a loop or stack to reverse the string.
+- Think about edge cases such as an empty string or a string with one character.
+`;
+  const reactContent = useRemarkSync(problemDescription);
 
   return (
     <Card className="bg-[#1a1f2e] text-white flex flex-col h-full">
@@ -53,18 +69,14 @@ function ProblemDescription() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="w-full">
-          <div className="relative">
-            <div
-              className="relative bg-[#1e1e2e]/50 backdrop-blur-sm border border-[#313244] 
-         rounded-xl p-1 h-full overflow-auto font-mono text-sm"
-            >
-              <div className="">
-                <pre className="whitespace-pre-wrap text-gray-300">{problemDescription}</pre>
-              </div>
-            </div>
+        <ScrollArea className="w-full h-[60vh]">
+          <div
+            className="prose prose-sm prose-invert"
+          >
+            {reactContent}
           </div>
         </ScrollArea>
+        
       </CardContent>
     </Card>
   );
