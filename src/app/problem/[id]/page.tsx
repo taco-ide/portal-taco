@@ -1,47 +1,52 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditorPanel from "./_components/EditorPanel";
 import Header from "./_components/Header";
 import OutputPanel from "./_components/OutputPanel";
-
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
 import ProblemDescription from "./_components/ProblemDescription";
 
-export default async function ProblemPage({ params }: { params: { id: string } }) {
+export default function ProblemPage({ params }: { params: { id: string } }) {
   return (
-    <div className="min-h-screen w-full mx-auto p-4 flex flex-col bg-slate-900 text-white">
+    <div className="h-screen w-screen p-4 gap-4 bg-slate-900 text-white flex flex-col overflow-hidden">
+
       <Header />
 
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="rounded-lg w-full h-full flex-1"
-      >
-        <ResizablePanel defaultSize={30}>
-          <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={65}>
+      <div className="flex-1 flex flex-row gap-4">
+
+
+        <div className="flex-1 h-[80vh]">
+          <Tabs defaultValue="problem" className="w-full h-full">
+            <TabsList className="grid w-full grid-cols-4 bg-[--color-tacoyellowdark] text-white">
+              <TabsTrigger value="problem">problem</TabsTrigger>
+              <TabsTrigger value="output">output</TabsTrigger>
+              <TabsTrigger value="input">input</TabsTrigger>
+              <TabsTrigger value="chat">chat</TabsTrigger>
+            </TabsList>
+            <TabsContent value="problem">
               <ProblemDescription />
-            </ResizablePanel>
-            <ResizableHandle withHandle={true} />
-            <ResizablePanel defaultSize={35}>
+            </TabsContent>
+            <TabsContent value="output">
               <OutputPanel />
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </ResizablePanel>
-        <ResizableHandle withHandle={true} />
-        <ResizablePanel defaultSize={50}>
-          <div className="flex flex-col h-full">
-            <EditorPanel />
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle={true} />
-        <ResizablePanel defaultSize={20}>
-          <div className="flex h-full items-center justify-center p-6">
-            <span className="font-semibold">Chat</span>
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+            </TabsContent>
+            <TabsContent value="input">
+              <div className="flex items-center justify-center p-6 overflow-y-auto">
+                <span className="font-semibold">Input</span>
+              </div>
+            </TabsContent>
+            <TabsContent value="chat">
+              <div className="flex items-center justify-center p-6 overflow-y-auto">
+                <span className="font-semibold">Chat</span>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+
+
+        <div className="flex-1 h-[80vh]">
+          <EditorPanel />
+        </div>
+      </div>
+
+
     </div>
   );
 }
