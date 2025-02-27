@@ -3,16 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run services:up && dotenv -e .env.development -- npm run prisma:migrate:deploy && npm run prisma:generate && npm run prisma:seed && next dev",
+    "build": "npm run prisma:migrate:deploy && npm run prisma:generate && npm run prisma:seed && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "services:up": "docker compose -p portal-taco -f infra/compose.yaml up -d",
+    "services:stop": "docker compose -p portal-taco -f infra/compose.yaml stop",
+    "services:down": "docker compose -p portal-taco -f infra/compose.yaml down",
+    "prisma:studio": "dotenv -e .env.development  -- npx prisma studio --schema=infra/prisma/schema.prisma",
+    "prisma:seed": "dotenv -e .env.development -- ts-node -r tsconfig-paths/register --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" infra/prisma/seed.ts",
+    "prisma:seedTest": "dotenv -e .env.development -- ts-node -r tsconfig-paths/register --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" infra/prisma/seedTest.ts",
+    "prisma:migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev --schema=infra/prisma/schema.prisma",
+    "prisma:migrate:deploy": "dotenv -e .env.development -- npx prisma migrate deploy --schema=infra/prisma/schema.prisma",
+    "prisma:generate": "dotenv -e .env.development -- npx prisma generate --schema=infra/prisma/schema.prisma"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@monaco-editor/react": "^4.6.0",
     "@radix-ui/react-alert-dialog": "^1.1.5",
     "@radix-ui/react-avatar": "^1.1.2",
+    "@prisma/client": "^6.3.1",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-scroll-area": "^1.2.2",
     "@radix-ui/react-select": "^2.1.5",
@@ -21,6 +31,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv-cli": "^8.0.0",
     "framer-motion": "^11.18.0",
     "lucide-react": "^0.471.1",
     "next": "14.2.23",
@@ -32,15 +43,17 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.1",
+    "ts-node": "^10.9.2",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.17.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.23",
     "postcss": "^8",
+    "prisma": "^6.3.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
