@@ -35,7 +35,7 @@ const Header = () => {
             </a>
           ))}
         </nav>
-        <Link href="/login" className="btn btn-primary">
+        <Link href="/auth/login" className="btn btn-primary">
           <Image
             src="/login.png"
             alt="login"
