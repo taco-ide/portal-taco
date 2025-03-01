@@ -6,6 +6,7 @@ export async function authMiddleware(
   request: NextRequest,
   publicPaths: string[] = [
     "/auth/login",
+    "/auth/signup",
     "/auth/reset-password",
     "/auth/verify",
   ]
@@ -13,7 +14,15 @@ export async function authMiddleware(
   const pathname = request.nextUrl.pathname;
 
   // Verifica se o caminho atual é público
-  if (publicPaths.some((path) => pathname.startsWith(path))) {
+  if (
+    publicPaths.some(
+      (path) =>
+        // Para caminhos específicos ("/auth", "/api/v1/auth"), verificamos se o caminho começa com eles
+        (path !== "/" && pathname.startsWith(path)) ||
+        // Para a raiz ("/"), verificamos se é exatamente igual
+        (path === "/" && pathname === "/")
+    )
+  ) {
     return NextResponse.next();
   }
 

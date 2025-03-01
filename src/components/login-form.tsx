@@ -14,6 +14,7 @@ import { AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
 import Script from "next/script";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Image from "next/image";
 
 export function LoginForm({
   className,
@@ -148,9 +149,11 @@ export function LoginForm({
             </div>
           </form>
           <div className="relative hidden bg-muted md:block">
-            <img
+            <Image
               src="/logoTaco.png"
               alt="Image"
+              width={500}
+              height={500}
               className="absolute inset-0 h-full w-full object-scale-down dark:brightness-[0.2] dark:grayscale"
             />
           </div>
