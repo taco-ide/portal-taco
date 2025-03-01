@@ -1,109 +1,152 @@
 "use client";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { useRouter } from "next/navigation"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginFormData, loginSchema } from "@/lib/auth/schemas";
+import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-
-const FormSchema = z.object({
-  email: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(2, {
-    message: "Password must be at least 2 characters.",
-  })
-})
+import { AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
+import Script from "next/script";
+import { useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter()
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  })
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(JSON.stringify(data, null, 2))
-    setTimeout(() => (router.push("/explore")), 5000)
+  const { login, error, isLoading, requireVerification } = useAuth();
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    if (shouldUse2FA() && !turnstileToken) {
+      alert("Por favor, complete a verificação de segurança.");
+      return;
+    }
+
+    await login({
+      ...data,
+      turnstileToken: turnstileToken || undefined,
+    });
+  };
+
+  // Função de callback para o Turnstile
+  const onTurnstileVerify = (token: string) => {
+    setTurnstileToken(token);
+  };
+
+  // Se for necessária verificação, redirecionar para a página de verificação
+  if (requireVerification) {
+    window.location.href = "/auth/verify";
+    return null;
   }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <Form {...form}>
-            <form className="p-6 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-6">
-                <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Welcome back</h1>
-                  <p className="text-balance text-muted-foreground">
-                    Login to your TACO account
-                  </p>
-                </div>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="a@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Password" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        <a
-                          href="#"
-                          className="ml-auto text-sm underline-offset-2 hover:underline"
-                        >
-                          Forgot your password?
-                        </a>
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-                <div className="text-center text-sm">
-                  Don&apos;t have an account?{" "}
-                  <Link className="underline underline-offset-4" href="/signup">Sign up</Link>
-                </div>
+          <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col items-center text-center">
+                <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
+                <p className="text-balance text-muted-foreground">
+                  Entre na sua conta TACO
+                </p>
               </div>
-            </form>
-          </Form>
+              <div className="grid gap-2">
+                <Label htmlFor="email">E-mail</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="text-sm text-destructive">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Senha</Label>
+                  <Link
+                    href="/auth/reset-password"
+                    className="ml-auto text-sm underline-offset-2 hover:underline"
+                  >
+                    Esqueceu sua senha?
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  {...register("password")}
+                />
+                {errors.password && (
+                  <p className="text-sm text-destructive">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              {shouldUse2FA() && (
+                <div className="flex justify-center">
+                  <div
+                    id="turnstile-widget"
+                    className="cf-turnstile"
+                    data-sitekey={AUTH_CONFIG.TURNSTILE_SITE_KEY}
+                    data-callback="onTurnstileVerify"
+                  ></div>
+
+                  <Script
+                    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+                    async
+                    defer
+                  />
+
+                  <Script id="turnstile-callback">
+                    {`
+                      window.onTurnstileVerify = function(token) {
+                        ${onTurnstileVerify.toString()}(token);
+                      }
+                    `}
+                  </Script>
+                </div>
+              )}
+
+              {error && (
+                <Alert variant="destructive">
+                  <AlertTitle>Erro</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+              <div className="text-center text-sm">
+                Não tem uma conta?{" "}
+                <Link
+                  href="/auth/signup"
+                  className="underline underline-offset-4"
+                >
+                  Registre-se
+                </Link>
+              </div>
+            </div>
+          </form>
           <div className="relative hidden bg-muted md:block">
             <img
               src="/logoTaco.png"
@@ -114,9 +157,10 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        Ao clicar em continuar, você concorda com nossos{" "}
+        <a href="#">Termos de Serviço</a> e{" "}
+        <a href="#">Política de Privacidade</a>.
       </div>
     </div>
-  )
+  );
 }
