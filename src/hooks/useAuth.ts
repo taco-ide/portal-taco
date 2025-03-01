@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LoginFormData, VerificationFormData } from "@/lib/auth/schemas";
+import {
+  LoginFormData,
+  SignupFormData,
+  VerificationFormData,
+} from "@/lib/auth/schemas";
 
 interface User {
   id: number;
@@ -21,7 +25,7 @@ export const useAuth = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,11 +47,50 @@ export const useAuth = () => {
       }
 
       // Redirecionamento após login bem-sucedido
-      router.push("/dashboard");
+      router.push("/explore");
       router.refresh();
       return true;
     } catch (error) {
       console.error("Erro durante o login:", error);
+      setError("Erro ao conectar com o servidor");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Função para registro (signup)
+  const signup = async (data: SignupFormData): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/v1/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Erro desconhecido no registro");
+        return false;
+      }
+
+      // Verificar se requer verificação por email
+      if (result.requireVerification) {
+        setRequireVerification(true);
+        return true;
+      }
+
+      // Redirecionamento após registro bem-sucedido
+      router.push("/auth/login?signupSuccess=true");
+      return true;
+    } catch (error) {
+      console.error("Erro durante o registro:", error);
       setError("Erro ao conectar com o servidor");
       return false;
     } finally {
@@ -61,7 +104,7 @@ export const useAuth = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/verify", {
+      const response = await fetch("/api/v1/auth/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +120,7 @@ export const useAuth = () => {
       }
 
       // Redirecionamento após verificação bem-sucedida
-      router.push("/dashboard");
+      router.push("/explore");
       router.refresh();
       return true;
     } catch (error) {
@@ -95,7 +138,7 @@ export const useAuth = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/logout", {
+      const response = await fetch("/api/v1/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,7 +173,7 @@ export const useAuth = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/send-code", {
+      const response = await fetch("/api/v1/auth/send-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +208,7 @@ export const useAuth = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/reset-password", {
+      const response = await fetch("/api/v1/auth/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -194,6 +237,7 @@ export const useAuth = () => {
 
   return {
     login,
+    signup,
     verify,
     logout,
     requestPasswordReset,

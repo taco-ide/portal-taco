@@ -41,3 +41,24 @@ export const resetPasswordSchema = z
   });
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+
+// Schema para validação de registro (signup)
+export const signupSchema = z
+  .object({
+    name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+    email: z.string().email("Email inválido"),
+    password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+    confirmPassword: z
+      .string()
+      .min(6, "A senha deve ter pelo menos 6 caracteres"),
+    role: z.string({
+      required_error: "Selecione um tipo de perfil",
+    }),
+    turnstileToken: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
+
+export type SignupFormData = z.infer<typeof signupSchema>;
