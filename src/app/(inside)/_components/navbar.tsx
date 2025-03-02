@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LogOut } from "lucide-react";
 
 const Navbar = () => {
   return (
@@ -21,13 +22,9 @@ const Navbar = () => {
           </span> */}
         </div>
         <Link href="/login" className="btn btn-primary">
-          <Image
-            src="/login.png"
-            alt="login"
-            width={50}
-            height={50}
-            priority
-            className="rounded-xl transform hover:scale-110 transition-transform duration-300"
+          <LogOut 
+            size={24}
+            className="text-[--color-tacoyellow] transform hover:scale-110 transition-transform duration-300"
           />
         </Link>
       </div>

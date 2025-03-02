@@ -76,7 +76,6 @@ def reverse_string(s: str) -> str:
             {reactContent}
           </div>
         </ScrollArea>
-        
       </CardContent>
     </Card>
   );

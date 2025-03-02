@@ -44,7 +44,7 @@ export function LoginForm({
   })
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(JSON.stringify(data, null, 2))
-    setTimeout(() => (router.push("/explore")), 5000)
+    router.push("/explore")
   }
 
   return (
