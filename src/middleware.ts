@@ -2,31 +2,24 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { authMiddleware } from "./lib/auth/middleware";
 
-// Caminhos públicos que não exigem autenticação
+// Public paths that don't require authentication
 const publicPaths = [
-  "/auth", // Todas as rotas de autenticação na interface
-  "/api/v1/auth", // Todas as rotas da API v1 de autenticação
-  "/", // Apenas a página inicial exata
+  "/auth", // All authentication routes in the interface
+  "/api/v1/auth", // All API v1 authentication routes
+  "/", // Only the exact home page
   "/images",
-  "/public", // Conteúdo da pasta pública
+  "/public", // Public folder content
 ];
 
-// Esta função é executada para todas as requisições
+// This function is executed for all requests
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-
-  // Verificar se é exatamente a página inicial
-  if (pathname === "/") {
-    return NextResponse.next();
-  }
-
-  // Verificar autenticação para todas as outras rotas
+  // Check authentication for all routes, passing our public paths configuration
   return authMiddleware(request, publicPaths);
 }
 
-// Configuração de correspondência de rotas para o middleware
+// Route matching configuration for the middleware
 export const config = {
-  // Aplicar o middleware a todas as rotas, exceto recursos estáticos
+  // Apply the middleware to all routes, except static resources
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|.*.svg|images/|public/|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif).*)",
   ],

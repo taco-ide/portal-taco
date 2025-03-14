@@ -2,55 +2,110 @@ import { NextRequest, NextResponse } from "next/server";
 import { AUTH_CONFIG } from "./config";
 import { verifySessionToken } from "./jwt";
 
+// Default public paths if none are provided
+const DEFAULT_PUBLIC_PATHS = [
+  "/auth/login",
+  "/auth/signup",
+  "/auth/reset-password",
+  "/auth/verify",
+];
+
 export async function authMiddleware(
   request: NextRequest,
-  publicPaths: string[] = [
-    "/auth/login",
-    "/auth/signup",
-    "/auth/reset-password",
-    "/auth/verify",
-  ]
+  publicPaths: string[] = DEFAULT_PUBLIC_PATHS
 ) {
   const pathname = request.nextUrl.pathname;
 
-  // Verifica se o caminho atual é público
-  if (
-    publicPaths.some(
-      (path) =>
-        // Para caminhos específicos ("/auth", "/api/v1/auth"), verificamos se o caminho começa com eles
-        (path !== "/" && pathname.startsWith(path)) ||
-        // Para a raiz ("/"), verificamos se é exatamente igual
-        (path === "/" && pathname === "/")
-    )
-  ) {
+  // Check if the current path is public
+  if (isPublicPath(pathname, publicPaths)) {
     return NextResponse.next();
   }
 
-  // Obtém o token de sessão dos cookies
+  // Get the session token from cookies
   const sessionToken = request.cookies.get(
     AUTH_CONFIG.SESSION_TOKEN_NAME
   )?.value;
 
-  // Se não houver token, redirecionar para a página de login
+  // Check if it's an API request
+  const isApiRequest = pathname.startsWith("/api/");
+
+  // If there's no token
   if (!sessionToken) {
-    const url = new URL("/auth/login", request.url);
-    url.searchParams.set("redirect", encodeURIComponent(pathname));
-    return NextResponse.redirect(url);
+    return handleUnauthenticated(request, isApiRequest, pathname);
   }
 
-  // Verifica se o token é válido
+  // Verify if the token is valid
   try {
     await verifySessionToken(sessionToken);
     return NextResponse.next();
   } catch (error) {
-    // Token inválido, redirecionar para login
-    const url = new URL("/auth/login", request.url);
-    url.searchParams.set("redirect", encodeURIComponent(pathname));
-    return NextResponse.redirect(url);
+    return handleInvalidToken(request, isApiRequest, pathname);
   }
 }
 
-// Helper para verificar o acesso por função
+// Helper function to handle unauthenticated requests
+function handleUnauthenticated(
+  request: NextRequest,
+  isApiRequest: boolean,
+  pathname: string
+) {
+  if (isApiRequest) {
+    return createUnauthorizedResponse("Unauthorized. Authentication required.");
+  }
+
+  return redirectToLogin(request, pathname);
+}
+
+// Helper function to handle invalid token
+function handleInvalidToken(
+  request: NextRequest,
+  isApiRequest: boolean,
+  pathname: string
+) {
+  if (isApiRequest) {
+    return createUnauthorizedResponse(
+      "Unauthorized. Invalid or expired token."
+    );
+  }
+
+  return redirectToLogin(request, pathname);
+}
+
+// Helper function to create unauthorized response
+function createUnauthorizedResponse(message: string) {
+  return new NextResponse(
+    JSON.stringify({
+      success: false,
+      message,
+    }),
+    {
+      status: 401,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
+
+// Helper function to redirect to login
+function redirectToLogin(request: NextRequest, pathname: string) {
+  const url = new URL("/auth/login", request.url);
+  url.searchParams.set("redirect", encodeURIComponent(pathname));
+  return NextResponse.redirect(url);
+}
+
+// Helper function to check if a path is public
+function isPublicPath(pathname: string, publicPaths: string[]): boolean {
+  return publicPaths.some(
+    (path) =>
+      // For specific paths ("/auth", "/api/v1/auth"), check if the path starts with them
+      (path !== "/" && pathname.startsWith(path)) ||
+      // For the root ("/"), check if it's exactly equal
+      (path === "/" && pathname === "/")
+  );
+}
+
+// Helper to check role-based access
 export async function checkRole(request: NextRequest, allowedRoles: string[]) {
   const sessionToken = request.cookies.get(
     AUTH_CONFIG.SESSION_TOKEN_NAME
