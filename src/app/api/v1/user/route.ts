@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken } from "@/lib/auth/jwt";
-import { AUTH_CONFIG } from "@/lib/auth/config";
+import { SHARED_AUTH_CONFIG } from "@/lib/auth/config";
 
 export async function GET(request: NextRequest) {
   try {
     const sessionToken = request.cookies.get(
-      AUTH_CONFIG.SESSION_TOKEN_NAME
+      SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME
     )?.value;
 
     if (!sessionToken) {

@@ -13,7 +13,7 @@ import {
 } from "@/lib/auth/schemas";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import { AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
+import { SHARED_AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
 import Script from "next/script";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -116,7 +116,7 @@ export function ResetPasswordForm({
                     <div
                       id="turnstile-widget"
                       className="cf-turnstile"
-                      data-sitekey={AUTH_CONFIG.TURNSTILE_SITE_KEY}
+                      data-sitekey={SHARED_AUTH_CONFIG.TURNSTILE_SITE_KEY}
                       data-callback="onTurnstileVerify"
                     ></div>
 

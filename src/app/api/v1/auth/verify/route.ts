@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificationSchema } from "@/lib/auth/schemas";
-import { AUTH_CONFIG } from "@/lib/auth/config";
+import {
+  AUTH_CONFIG,
+  SERVER_AUTH_CONFIG,
+  SHARED_AUTH_CONFIG,
+  isProduction,
+} from "@/lib/auth/config";
 import {
   clearCookie,
   getCookie,
@@ -9,6 +14,7 @@ import {
 import { verifyCode } from "@/lib/auth/utils";
 import { createSessionToken, verifyVerificationToken } from "@/lib/auth/jwt";
 import { PrismaClient } from "@prisma/client";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -27,9 +33,13 @@ export async function POST(request: NextRequest) {
 
     const { code } = validation.data;
 
-    // Obter tokens temporários dos cookies
-    const verificationToken = getCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
-    const verificationId = getCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
+    // Obter tokens dos cookies
+    const verificationToken = cookies().get(
+      SHARED_AUTH_CONFIG.VERIFICATION_TOKEN_NAME
+    )?.value;
+    const verificationId = cookies().get(
+      SHARED_AUTH_CONFIG.VERIFICATION_ID_NAME
+    )?.value;
 
     if (!verificationToken || !verificationId) {
       return NextResponse.json(
@@ -84,16 +94,18 @@ export async function POST(request: NextRequest) {
       role: user.role,
     });
 
-    // Definir cookie de sessão
-    setSecureCookie(
-      AUTH_CONFIG.SESSION_TOKEN_NAME,
-      sessionToken,
-      AUTH_CONFIG.SESSION_EXPIRATION
-    );
+    // Definir cookie com token de sessão
+    cookies().set({
+      name: SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME,
+      value: sessionToken,
+      maxAge: SHARED_AUTH_CONFIG.SESSION_EXPIRATION,
+      httpOnly: true,
+      secure: isProduction(),
+    });
 
-    // Limpar cookies temporários
-    clearCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
-    clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
+    // Limpar cookies de verificação
+    cookies().delete(SHARED_AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
+    cookies().delete(SHARED_AUTH_CONFIG.VERIFICATION_ID_NAME);
 
     return NextResponse.json({
       message: "Verificação bem-sucedida",

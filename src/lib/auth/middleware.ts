@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AUTH_CONFIG } from "./config";
+import { SHARED_AUTH_CONFIG } from "./config";
 import { verifySessionToken } from "./jwt";
+import { cookies } from "next/headers";
 
 // Default public paths if none are provided
 const DEFAULT_PUBLIC_PATHS = [
@@ -23,7 +24,7 @@ export async function authMiddleware(
 
   // Get the session token from cookies
   const sessionToken = request.cookies.get(
-    AUTH_CONFIG.SESSION_TOKEN_NAME
+    SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME
   )?.value;
 
   // Check if it's an API request
@@ -108,7 +109,7 @@ function isPublicPath(pathname: string, publicPaths: string[]): boolean {
 // Helper to check role-based access
 export async function checkRole(request: NextRequest, allowedRoles: string[]) {
   const sessionToken = request.cookies.get(
-    AUTH_CONFIG.SESSION_TOKEN_NAME
+    SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME
   )?.value;
 
   if (!sessionToken) {
@@ -120,5 +121,20 @@ export async function checkRole(request: NextRequest, allowedRoles: string[]) {
     return allowedRoles.includes(payload.role);
   } catch (error) {
     return false;
+  }
+}
+
+// Middleware para verificar se o usuário é admin
+export async function adminMiddleware(req: NextRequest) {
+  try {
+    // Obter token da sessão dos cookies
+    const sessionToken = req.cookies.get(
+      SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME
+    )?.value;
+
+    // Implementação futura
+    return NextResponse.next();
+  } catch (error) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 }

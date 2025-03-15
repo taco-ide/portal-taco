@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { AUTH_CONFIG } from "@/lib/auth/config";
+import {
+  AUTH_CONFIG,
+  SERVER_AUTH_CONFIG,
+  SHARED_AUTH_CONFIG,
+  isProduction,
+} from "@/lib/auth/config";
 import { clearCookie, getCookie } from "@/lib/auth/server-cookies";
 import { resetPasswordSchema } from "@/lib/auth/schemas";
 import { hashPassword, verifyCode } from "@/lib/auth/utils";
 import { verifyVerificationToken } from "@/lib/auth/jwt";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -23,9 +29,13 @@ export async function POST(request: NextRequest) {
 
     const { code, password } = validation.data;
 
-    // Obter tokens temporários dos cookies
-    const verificationToken = getCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
-    const verificationId = getCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
+    // Obter tokens dos cookies
+    const verificationToken = cookies().get(
+      SHARED_AUTH_CONFIG.VERIFICATION_TOKEN_NAME
+    )?.value;
+    const verificationId = cookies().get(
+      SHARED_AUTH_CONFIG.VERIFICATION_ID_NAME
+    )?.value;
 
     if (!verificationToken || !verificationId) {
       return NextResponse.json(
@@ -86,9 +96,9 @@ export async function POST(request: NextRequest) {
       data: { passwordHash },
     });
 
-    // Limpar cookies temporários
-    clearCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
-    clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
+    // Limpar cookies de verificação
+    cookies().delete(SHARED_AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
+    cookies().delete(SHARED_AUTH_CONFIG.VERIFICATION_ID_NAME);
 
     return NextResponse.json({
       message: "Senha redefinida com sucesso",

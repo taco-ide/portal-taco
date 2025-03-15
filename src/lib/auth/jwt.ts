@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
-import { AUTH_CONFIG } from "./config";
+import { SERVER_AUTH_CONFIG, SHARED_AUTH_CONFIG } from "./config";
 import { JWTPayload } from "jose";
 
 export interface SessionTokenPayload extends JWTPayload {
@@ -20,36 +20,36 @@ export interface VerificationTokenPayload extends JWTPayload {
 export async function createSessionToken(
   payload: SessionTokenPayload
 ): Promise<string> {
-  const secretKey = new TextEncoder().encode(AUTH_CONFIG.JWT_SECRET);
-
-  return new SignJWT(payload)
+  const secretKey = new TextEncoder().encode(SERVER_AUTH_CONFIG.JWT_SECRET);
+  const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(
-      Math.floor(Date.now() / 1000) + AUTH_CONFIG.SESSION_EXPIRATION
+      Math.floor(Date.now() / 1000) + SHARED_AUTH_CONFIG.SESSION_EXPIRATION
     )
     .sign(secretKey);
+  return token;
 }
 
-// Criar token de verificação temporário
+// Criar token de verificação (2FA, reset de senha)
 export async function createVerificationToken(
   payload: VerificationTokenPayload
 ): Promise<string> {
-  const secretKey = new TextEncoder().encode(AUTH_CONFIG.JWT_SECRET);
-
-  return new SignJWT(payload)
+  const secretKey = new TextEncoder().encode(SERVER_AUTH_CONFIG.JWT_SECRET);
+  const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(
-      Math.floor(Date.now() / 1000) + AUTH_CONFIG.VERIFICATION_EXPIRATION
+      Math.floor(Date.now() / 1000) + SHARED_AUTH_CONFIG.VERIFICATION_EXPIRATION
     )
     .sign(secretKey);
+  return token;
 }
 
-// Verificar qualquer token
+// Verificar qualquer token JWT
 export async function verifyToken<T>(token: string): Promise<T> {
   try {
-    const secretKey = new TextEncoder().encode(AUTH_CONFIG.JWT_SECRET);
+    const secretKey = new TextEncoder().encode(SERVER_AUTH_CONFIG.JWT_SECRET);
     const { payload } = await jwtVerify(token, secretKey);
     return payload as T;
   } catch (error) {

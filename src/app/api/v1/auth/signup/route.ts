@@ -11,6 +11,12 @@ import {
   sendVerificationEmail,
   verifyTurnstileToken,
 } from "@/lib/auth/utils";
+import {
+  SERVER_AUTH_CONFIG,
+  SHARED_AUTH_CONFIG,
+  isProduction,
+} from "@/lib/auth/config";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -90,18 +96,23 @@ export async function POST(request: NextRequest) {
         type: "2FA",
       });
 
-      // Definir cookies temporários para o processo de verificação
-      setSecureCookie(
-        AUTH_CONFIG.VERIFICATION_TOKEN_NAME,
-        verificationToken,
-        AUTH_CONFIG.VERIFICATION_EXPIRATION
-      );
+      // Definir cookie com token de verificação
+      cookies().set({
+        name: SHARED_AUTH_CONFIG.VERIFICATION_TOKEN_NAME,
+        value: verificationToken,
+        maxAge: SHARED_AUTH_CONFIG.VERIFICATION_EXPIRATION,
+        httpOnly: true,
+        secure: isProduction(),
+      });
 
-      setSecureCookie(
-        AUTH_CONFIG.VERIFICATION_ID_NAME,
-        verificationId.toString(),
-        AUTH_CONFIG.VERIFICATION_EXPIRATION
-      );
+      // Definir cookie com ID de verificação
+      cookies().set({
+        name: SHARED_AUTH_CONFIG.VERIFICATION_ID_NAME,
+        value: String(verificationId),
+        maxAge: SHARED_AUTH_CONFIG.VERIFICATION_EXPIRATION,
+        httpOnly: true,
+        secure: isProduction(),
+      });
 
       return NextResponse.json(
         {

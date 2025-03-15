@@ -1,10 +1,11 @@
 import { compare, hash } from "bcrypt";
 import { Resend } from "resend";
-import { AUTH_CONFIG, isProduction } from "./config";
+import { SERVER_AUTH_CONFIG, SHARED_AUTH_CONFIG, isProduction } from "./config";
 import { PrismaClient } from "@prisma/client";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
-const resend = new Resend(AUTH_CONFIG.RESEND_API_KEY);
+const resend = new Resend(SERVER_AUTH_CONFIG.RESEND_API_KEY);
 
 // Função para gerar hash de senha
 export async function hashPassword(password: string): Promise<string> {
@@ -79,50 +80,43 @@ export async function verifyCode(
   return isValid;
 }
 
-// Enviar e-mail com código de verificação
+// Enviar email com código de verificação
 export async function sendVerificationEmail(
   email: string,
   code: string,
-  type: "2FA" | "PASSWORD_RESET"
+  name?: string
 ) {
-  if (!isProduction() && !AUTH_CONFIG.RESEND_API_KEY) {
-    console.log(`[DEV] Código de verificação para ${email}: ${code}`);
-    return true;
-  }
-
   try {
-    const subject =
-      type === "2FA" ? "Seu código de verificação" : "Recuperação de senha";
+    // Em desenvolvimento, apenas simular o envio se não houver API key
+    if (!isProduction() && !SERVER_AUTH_CONFIG.RESEND_API_KEY) {
+      console.log(`[DEV] Código de verificação para ${email}: ${code}`);
+      return { success: true };
+    }
 
-    const content =
-      type === "2FA"
-        ? `Seu código de verificação é: ${code}. Este código expira em 5 minutos.`
-        : `Seu código para redefinição de senha é: ${code}. Este código expira em 5 minutos.`;
-
-    await resend.emails.send({
-      from: AUTH_CONFIG.EMAIL_FROM,
+    const { data, error } = await resend.emails.send({
+      from: SERVER_AUTH_CONFIG.EMAIL_FROM,
       to: email,
-      subject,
-      text: content,
+      subject: "Seu código de verificação",
+      text: `Seu código de verificação é: ${code}. Este código expira em 5 minutos.`,
     });
 
-    return true;
+    if (error) {
+      console.error("Erro ao enviar e-mail:", error);
+      return { success: false };
+    }
+
+    return { success: true };
   } catch (error) {
     console.error("Erro ao enviar e-mail:", error);
-    return false;
+    return { success: false };
   }
 }
 
-// Verificar token do Turnstile
-export async function verifyTurnstileToken(token: string): Promise<boolean> {
-  // Em ambiente de desenvolvimento, pular a verificação
-  if (!isProduction()) {
-    return true;
-  }
-
+// Verificar token do Cloudflare Turnstile
+export async function verifyTurnstileToken(token: string) {
   try {
-    const formData = new URLSearchParams();
-    formData.append("secret", AUTH_CONFIG.TURNSTILE_SECRET);
+    const formData = new FormData();
+    formData.append("secret", SERVER_AUTH_CONFIG.TURNSTILE_SECRET);
     formData.append("response", token);
 
     const response = await fetch(
