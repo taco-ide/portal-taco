@@ -27,7 +27,10 @@ export const AUTH_CONFIG = {
 };
 
 // Função para verificar se o ambiente é de produção
-export const isProduction = () => process.env.NODE_ENV === "production";
+// Agora também verifica a variável NEXT_PUBLIC_APP_ENV para permitir forçar o modo de produção
+export const isProduction = () =>
+  process.env.NODE_ENV === "production" ||
+  process.env.NEXT_PUBLIC_APP_ENV === "production";
 
 // Verifica se a autenticação de dois fatores deve ser usada
 export function shouldUse2FA() {
