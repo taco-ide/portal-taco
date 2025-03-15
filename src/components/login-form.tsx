@@ -31,7 +31,7 @@ export function LoginForm({
 
   const onSubmit = async (data: LoginFormData) => {
     if (shouldUse2FA() && !turnstileToken) {
-      alert("Por favor, complete a verificação de segurança.");
+      alert("Please complete the security verification.");
       return;
     }
 
@@ -41,12 +41,12 @@ export function LoginForm({
     });
   };
 
-  // Função de callback para o Turnstile
+  // Turnstile callback function
   const onTurnstileVerify = (token: string) => {
     setTurnstileToken(token);
   };
 
-  // Se for necessária verificação, redirecionar para a página de verificação
+  // If verification is required, redirect to verification page
   if (requireVerification) {
     window.location.href = "/auth/verify";
     return null;
@@ -57,17 +57,17 @@ export function LoginForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
+            <h1 className="text-2xl font-bold">Welcome back</h1>
             <p className="text-balance text-muted-foreground">
-              Entre na sua conta TACO
+              Sign in to your TACO account
             </p>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">E-mail</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
-              placeholder="seu@email.com"
+              placeholder="your@email.com"
               {...register("email")}
             />
             {errors.email && (
@@ -76,12 +76,12 @@ export function LoginForm({
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
-              <Label htmlFor="password">Senha</Label>
+              <Label htmlFor="password">Password</Label>
               <Link
                 href="/auth/reset-password"
                 className="ml-auto text-sm underline-offset-2 hover:underline"
               >
-                Esqueceu sua senha?
+                Forgot password?
               </Link>
             </div>
             <Input id="password" type="password" {...register("password")} />
@@ -119,18 +119,18 @@ export function LoginForm({
 
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Erro</AlertTitle>
+              <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Entrando..." : "Entrar"}
+            {isLoading ? "Signing in..." : "Sign in"}
           </Button>
           <div className="text-center text-sm">
-            Não tem uma conta?{" "}
+            Don't have an account?{" "}
             <Link href="/auth/signup" className="underline underline-offset-4">
-              Registre-se
+              Sign up
             </Link>
           </div>
         </div>

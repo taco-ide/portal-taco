@@ -27,25 +27,25 @@ export function ResetPasswordForm({
   const [email, setEmail] = useState("");
   const [requestSuccess, setRequestSuccess] = useState(false);
 
-  // Formulário para solicitar código
+  // Form for requesting code
   const requestForm = useForm({
     resolver: zodResolver(requestPasswordResetSchema),
   });
 
-  // Formulário para redefinir senha
+  // Form for resetting password
   const resetForm = useForm({
     resolver: zodResolver(resetPasswordSchema),
   });
 
-  // Função de callback para o Turnstile
+  // Turnstile callback function
   const onTurnstileVerify = (token: string) => {
     setTurnstileToken(token);
   };
 
-  // Enviar solicitação de código
+  // Send code request
   const onRequestSubmit = async (data: { email: string }) => {
     if (shouldUse2FA() && !turnstileToken) {
-      alert("Por favor, complete a verificação de segurança.");
+      alert("Please complete the security verification.");
       return;
     }
 
@@ -61,7 +61,7 @@ export function ResetPasswordForm({
     }
   };
 
-  // Redefinir senha
+  // Reset password
   const onResetSubmit = async (data: {
     code: string;
     password: string;
@@ -72,31 +72,31 @@ export function ResetPasswordForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      {/* Título e descrição */}
+      {/* Title and description */}
       <div className="flex flex-col items-center text-center mb-6">
         <h1 className="text-2xl font-bold">
-          {step === "request" ? "Recuperação de senha" : "Redefinir senha"}
+          {step === "request" ? "Password Recovery" : "Reset Password"}
         </h1>
         <p className="text-balance text-muted-foreground">
           {step === "request"
-            ? "Informe seu e-mail para receber um código de recuperação."
-            : "Insira o código recebido por e-mail e defina sua nova senha."}
+            ? "Enter your email to receive a recovery code."
+            : "Enter the code received by email and set your new password."}
         </p>
       </div>
 
-      {/* Formulário para solicitar código */}
+      {/* Form for requesting code */}
       {step === "request" && (
         <form
           className="flex flex-col gap-6"
           onSubmit={requestForm.handleSubmit(onRequestSubmit)}
         >
           <div className="grid gap-2">
-            <Label htmlFor="email">E-mail</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
               {...requestForm.register("email")}
-              placeholder="seu@email.com"
+              placeholder="your@email.com"
             />
             {requestForm.formState.errors.email && (
               <p className="text-sm text-destructive">
@@ -132,31 +132,31 @@ export function ResetPasswordForm({
 
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Erro</AlertTitle>
+              <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Enviando..." : "Enviar código"}
+            {isLoading ? "Sending..." : "Send Code"}
           </Button>
 
           <div className="text-center text-sm">
             <Link href="/auth/login" className="underline underline-offset-4">
-              Voltar para o login
+              Back to login
             </Link>
           </div>
         </form>
       )}
 
-      {/* Formulário para redefinir senha */}
+      {/* Form for resetting password */}
       {step === "reset" && (
         <form
           className="flex flex-col gap-6"
           onSubmit={resetForm.handleSubmit(onResetSubmit)}
         >
           <div className="grid gap-2">
-            <Label htmlFor="code">Código de verificação</Label>
+            <Label htmlFor="code">Verification Code</Label>
             <Input
               id="code"
               type="text"
@@ -172,7 +172,7 @@ export function ResetPasswordForm({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="password">Nova senha</Label>
+            <Label htmlFor="password">New Password</Label>
             <Input
               id="password"
               type="password"
@@ -186,7 +186,7 @@ export function ResetPasswordForm({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
+            <Label htmlFor="confirmPassword">Confirm New Password</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -201,18 +201,18 @@ export function ResetPasswordForm({
 
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Erro</AlertTitle>
+              <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Redefinindo..." : "Redefinir senha"}
+            {isLoading ? "Resetting..." : "Reset Password"}
           </Button>
 
           <div className="text-center text-sm">
             <Link href="/auth/login" className="underline underline-offset-4">
-              Voltar para o login
+              Back to login
             </Link>
           </div>
         </form>

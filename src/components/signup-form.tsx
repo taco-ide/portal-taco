@@ -40,7 +40,7 @@ export function SignupForm({
 
   const onSubmit = async (data: SignupFormData) => {
     if (shouldUse2FA() && !turnstileToken) {
-      alert("Por favor, complete a verificação de segurança.");
+      alert("Please complete the security verification.");
       return;
     }
 
@@ -50,12 +50,12 @@ export function SignupForm({
     });
   };
 
-  // Função de callback para o Turnstile
+  // Turnstile callback function
   const onTurnstileVerify = (token: string) => {
     setTurnstileToken(token);
   };
 
-  // Se for necessária verificação, redirecionar para a página de verificação
+  // If verification is required, redirect to verification page
   if (requireVerification) {
     window.location.href = "/auth/verify";
     return null;
@@ -66,17 +66,17 @@ export function SignupForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Crie sua conta</h1>
+            <h1 className="text-2xl font-bold">Create your account</h1>
             <p className="text-balance text-muted-foreground">
-              Registre-se na plataforma TACO
+              Sign up for the TACO platform
             </p>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="name">Nome completo</Label>
+            <Label htmlFor="name">Full Name</Label>
             <Input
               id="name"
               type="text"
-              placeholder="Seu nome completo"
+              placeholder="Your full name"
               {...register("name")}
             />
             {errors.name && (
@@ -84,11 +84,11 @@ export function SignupForm({
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">E-mail</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
-              placeholder="seu@email.com"
+              placeholder="your@email.com"
               {...register("email")}
             />
             {errors.email && (
@@ -96,11 +96,11 @@ export function SignupForm({
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Senha</Label>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
-              placeholder="Sua senha"
+              placeholder="Your password"
               {...register("password")}
             />
             {errors.password && (
@@ -110,11 +110,11 @@ export function SignupForm({
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Confirme a senha</Label>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
               type="password"
-              placeholder="Confirme sua senha"
+              placeholder="Confirm your password"
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
@@ -124,13 +124,13 @@ export function SignupForm({
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="role">Tipo de perfil</Label>
+            <Label htmlFor="role">Profile Type</Label>
             <Select onValueChange={(value) => setValue("role", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Selecione um tipo" />
+                <SelectValue placeholder="Select a type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="student">Estudante</SelectItem>
+                <SelectItem value="student">Student</SelectItem>
                 <SelectItem value="professor">Professor</SelectItem>
               </SelectContent>
             </Select>
@@ -166,18 +166,18 @@ export function SignupForm({
 
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Erro</AlertTitle>
+              <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Registrando..." : "Registrar"}
+            {isLoading ? "Signing up..." : "Sign up"}
           </Button>
           <div className="text-center text-sm">
-            Já tem uma conta?{" "}
+            Already have an account?{" "}
             <Link href="/auth/login" className="underline underline-offset-4">
-              Entrar
+              Sign in
             </Link>
           </div>
         </div>

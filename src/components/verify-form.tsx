@@ -34,14 +34,14 @@ export function VerifyForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Verificação em duas etapas</h1>
+            <h1 className="text-2xl font-bold">Two-Step Verification</h1>
             <p className="text-balance text-muted-foreground">
-              Enviamos um código de verificação para o seu e-mail. Por favor,
-              insira-o abaixo.
+              We've sent a verification code to your email. Please enter it
+              below.
             </p>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="code">Código de verificação</Label>
+            <Label htmlFor="code">Verification Code</Label>
             <Input
               id="code"
               type="text"
@@ -56,18 +56,18 @@ export function VerifyForm({
 
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Erro</AlertTitle>
+              <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Verificando..." : "Verificar"}
+            {isLoading ? "Verifying..." : "Verify"}
           </Button>
 
           <div className="text-center text-sm">
             <Link href="/auth/login" className="underline underline-offset-4">
-              Voltar para o login
+              Back to login
             </Link>
           </div>
         </div>

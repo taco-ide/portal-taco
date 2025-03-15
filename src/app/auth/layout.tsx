@@ -17,7 +17,7 @@ export default function AuthLayout({
             <div className="relative hidden bg-muted md:block">
               <Image
                 src="/logoTaco.png"
-                alt="Logo TACO"
+                alt="TACO Logo"
                 width={500}
                 height={500}
                 className="absolute inset-0 h-full w-full object-scale-down dark:brightness-[0.2] dark:grayscale"
@@ -26,9 +26,8 @@ export default function AuthLayout({
           </CardContent>
         </Card>
         <div className="mt-6 text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-          Ao utilizar nossos serviços, você concorda com nossos{" "}
-          <a href="#">Termos de Serviço</a> e{" "}
-          <a href="#">Política de Privacidade</a>.
+          By using our services, you agree to our{" "}
+          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
         </div>
       </div>
     </div>
