@@ -1,6 +1,6 @@
 import { CodeEditorState } from "./../types/index";
 import { create } from "zustand";
-import { Monaco } from "@monaco-editor/react";
+import type { editor as MonacoEditor } from "monaco-editor";
 import { LANGUAGE_CONFIG } from "@/app/problem/[id]/_constants";
 
 const getInitialState = () => {
@@ -10,6 +10,7 @@ const getInitialState = () => {
       language: "javascript",
       fontSize: 16,
       theme: "vs-dark",
+      input: "",
     };
   }
 
@@ -17,11 +18,13 @@ const getInitialState = () => {
   const savedLanguage = localStorage.getItem("editor-language") || "javascript";
   const savedTheme = localStorage.getItem("editor-theme") || "vs-dark";
   const savedFontSize = localStorage.getItem("editor-font-size") || 16;
+  const savedInput = localStorage.getItem("editor-input") || "";
 
   return {
     language: savedLanguage,
     theme: savedTheme,
     fontSize: Number(savedFontSize),
+    input: savedInput,
   };
 };
 
@@ -38,7 +41,14 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
 
     getCode: () => get().editor?.getValue() || "",
 
-    setEditor: (editor: Monaco) => {
+    getInput: () => get().input,
+
+    setInput: (input: string) => {
+      localStorage.setItem("editor-input", input);
+      set({ input });
+    },
+
+    setEditor: (editor: MonacoEditor.IStandaloneCodeEditor) => {
       // TODO: Save code based on the problem on the database
       const savedCode = localStorage.getItem(`editor-code-${get().language}`);
       if (savedCode) editor.setValue(savedCode);
@@ -73,8 +83,9 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     },
 
     runCode: async () => {
-      const { language, getCode } = get();
+      const { language, getCode, getInput } = get();
       const code = getCode();
+      const stdin = getInput();
 
       if (!code) {
         set({ error: "Please enter some code" });
@@ -95,6 +106,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
             language: runtime.language,
             version: runtime.version,
             files: [{ content: code }],
+            stdin,
           }),
         });
 
