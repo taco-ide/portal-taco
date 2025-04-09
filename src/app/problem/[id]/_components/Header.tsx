@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BugOffIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import LanguageSelector from "./LanguageSelector";
 import RunButton from "./RunButton";
