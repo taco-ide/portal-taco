@@ -6,14 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormData, loginSchema } from "@/lib/auth/schemas";
+import {
+  requestPasswordResetSchema,
+  resetPasswordSchema,
+} from "@/lib/auth/schemas";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import {
-  SHARED_AUTH_CONFIG,
-  shouldUse2FA,
-  isProduction,
-} from "@/lib/auth/config";
+import { SHARED_AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
 import Script from "next/script";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -30,12 +29,15 @@ declare global {
   }
 }
 
-export function LoginForm({
+export function ResetPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login, error, isLoading, requireVerification } = useAuth();
+  const { requestPasswordReset, resetPassword, error, isLoading } = useAuth();
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [step, setStep] = useState<"request" | "reset">("request");
+  const [email, setEmail] = useState("");
+  const [requestSuccess, setRequestSuccess] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const turnstileWidgetId = useRef<string | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
@@ -129,19 +131,8 @@ export function LoginForm({
 
   // Garantir que o componente só renderize o Turnstile no cliente
   useEffect(() => {
-    console.log("Login form mounted");
+    console.log("Reset password form mounted");
     setIsMounted(true);
-
-    // Adicionar informações de depuração
-    const envInfo = {
-      isProduction: isProduction(),
-      shouldUse2FA: shouldUse2FA(),
-      turnstileSiteKey: SHARED_AUTH_CONFIG.TURNSTILE_SITE_KEY,
-      nodeEnv: process.env.NODE_ENV,
-      appEnv: process.env.NEXT_PUBLIC_APP_ENV,
-    };
-
-    console.log("Environment Debug Info:", envInfo);
 
     // Carregar o script após um pequeno atraso para garantir que o DOM esteja pronto
     if (shouldUse2FA()) {
@@ -160,15 +151,18 @@ export function LoginForm({
     };
   }, [loadTurnstileScript]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  // Form for requesting code
+  const requestForm = useForm({
+    resolver: zodResolver(requestPasswordResetSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  // Form for resetting password
+  const resetForm = useForm({
+    resolver: zodResolver(resetPasswordSchema),
+  });
+
+  // Send code request
+  const onRequestSubmit = async (data: { email: string }) => {
     // Verificar e registrar o estado do token antes da validação
     console.log(
       "Form submission - Turnstile token status:",
@@ -187,10 +181,13 @@ export function LoginForm({
               "Retrieved token on submit:",
               response.substring(0, 10) + "..."
             );
-            await login({
-              ...data,
-              turnstileToken: response,
-            });
+            setEmail(data.email);
+            const success = await requestPasswordReset(data.email, response);
+
+            if (success) {
+              setRequestSuccess(true);
+              setStep("reset");
+            }
             return;
           }
         }
@@ -202,54 +199,58 @@ export function LoginForm({
       return;
     }
 
-    await login({
-      ...data,
-      turnstileToken: turnstileToken || undefined,
-    });
+    setEmail(data.email);
+    const success = await requestPasswordReset(
+      data.email,
+      turnstileToken || undefined
+    );
+
+    if (success) {
+      setRequestSuccess(true);
+      setStep("reset");
+    }
   };
 
-  // If verification is required, redirect to verification page
-  if (requireVerification) {
-    window.location.href = "/auth/verify";
-    return null;
-  }
+  // Reset password
+  const onResetSubmit = async (data: {
+    code: string;
+    password: string;
+    confirmPassword: string;
+  }) => {
+    await resetPassword(data.code, data.password, data.confirmPassword);
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Welcome back</h1>
-            <p className="text-balance text-muted-foreground">
-              Sign in to your TACO account
-            </p>
-          </div>
+      {/* Title and description */}
+      <div className="flex flex-col items-center text-center mb-6">
+        <h1 className="text-2xl font-bold">
+          {step === "request" ? "Password Recovery" : "Reset Password"}
+        </h1>
+        <p className="text-balance text-muted-foreground">
+          {step === "request"
+            ? "Enter your email to receive a recovery code."
+            : "Enter the code received by email and set your new password."}
+        </p>
+      </div>
+
+      {/* Form for requesting code */}
+      {step === "request" && (
+        <form
+          className="flex flex-col gap-6"
+          onSubmit={requestForm.handleSubmit(onRequestSubmit)}
+        >
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
+              {...requestForm.register("email")}
               placeholder="your@email.com"
-              {...register("email")}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/auth/reset-password"
-                className="ml-auto text-sm underline-offset-2 hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Input id="password" type="password" {...register("password")} />
-            {errors.password && (
+            {requestForm.formState.errors.email && (
               <p className="text-sm text-destructive">
-                {errors.password.message}
+                {requestForm.formState.errors.email.message}
               </p>
             )}
           </div>
@@ -268,16 +269,85 @@ export function LoginForm({
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
+            {isLoading ? "Sending..." : "Send Code"}
           </Button>
+
           <div className="text-center text-sm">
-            Don't have an account?{" "}
-            <Link href="/auth/signup" className="underline underline-offset-4">
-              Sign up
+            <Link href="/auth/login" className="underline underline-offset-4">
+              Back to login
             </Link>
           </div>
-        </div>
-      </form>
+        </form>
+      )}
+
+      {/* Form for resetting password */}
+      {step === "reset" && (
+        <form
+          className="flex flex-col gap-6"
+          onSubmit={resetForm.handleSubmit(onResetSubmit)}
+        >
+          <div className="grid gap-2">
+            <Label htmlFor="code">Verification Code</Label>
+            <Input
+              id="code"
+              type="text"
+              inputMode="numeric"
+              {...resetForm.register("code")}
+              placeholder="123456"
+            />
+            {resetForm.formState.errors.code && (
+              <p className="text-sm text-destructive">
+                {resetForm.formState.errors.code.message}
+              </p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="password">New Password</Label>
+            <Input
+              id="password"
+              type="password"
+              {...resetForm.register("password")}
+            />
+            {resetForm.formState.errors.password && (
+              <p className="text-sm text-destructive">
+                {resetForm.formState.errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="confirmPassword">Confirm New Password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              {...resetForm.register("confirmPassword")}
+            />
+            {resetForm.formState.errors.confirmPassword && (
+              <p className="text-sm text-destructive">
+                {resetForm.formState.errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Resetting..." : "Reset Password"}
+          </Button>
+
+          <div className="text-center text-sm">
+            <Link href="/auth/login" className="underline underline-offset-4">
+              Back to login
+            </Link>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

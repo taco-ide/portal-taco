@@ -6,17 +6,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormData, loginSchema } from "@/lib/auth/schemas";
+import { SignupFormData, signupSchema } from "@/lib/auth/schemas";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import {
-  SHARED_AUTH_CONFIG,
-  shouldUse2FA,
-  isProduction,
-} from "@/lib/auth/config";
+import { SHARED_AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
 import Script from "next/script";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Adicionar declaração de tipo para a função onTurnstileVerify no objeto Window
 declare global {
@@ -30,11 +33,11 @@ declare global {
   }
 }
 
-export function LoginForm({
+export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login, error, isLoading, requireVerification } = useAuth();
+  const { signup, error, isLoading, requireVerification } = useAuth();
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const turnstileWidgetId = useRef<string | null>(null);
@@ -129,19 +132,8 @@ export function LoginForm({
 
   // Garantir que o componente só renderize o Turnstile no cliente
   useEffect(() => {
-    console.log("Login form mounted");
+    console.log("Signup form mounted");
     setIsMounted(true);
-
-    // Adicionar informações de depuração
-    const envInfo = {
-      isProduction: isProduction(),
-      shouldUse2FA: shouldUse2FA(),
-      turnstileSiteKey: SHARED_AUTH_CONFIG.TURNSTILE_SITE_KEY,
-      nodeEnv: process.env.NODE_ENV,
-      appEnv: process.env.NEXT_PUBLIC_APP_ENV,
-    };
-
-    console.log("Environment Debug Info:", envInfo);
 
     // Carregar o script após um pequeno atraso para garantir que o DOM esteja pronto
     if (shouldUse2FA()) {
@@ -164,11 +156,13 @@ export function LoginForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    setValue,
+    watch,
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     // Verificar e registrar o estado do token antes da validação
     console.log(
       "Form submission - Turnstile token status:",
@@ -187,7 +181,7 @@ export function LoginForm({
               "Retrieved token on submit:",
               response.substring(0, 10) + "..."
             );
-            await login({
+            await signup({
               ...data,
               turnstileToken: response,
             });
@@ -202,7 +196,7 @@ export function LoginForm({
       return;
     }
 
-    await login({
+    await signup({
       ...data,
       turnstileToken: turnstileToken || undefined,
     });
@@ -219,10 +213,22 @@ export function LoginForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Welcome back</h1>
+            <h1 className="text-2xl font-bold">Create your account</h1>
             <p className="text-balance text-muted-foreground">
-              Sign in to your TACO account
+              Sign up for the TACO platform
             </p>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Your full name"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-sm text-destructive">{errors.name.message}</p>
+            )}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
@@ -237,20 +243,46 @@ export function LoginForm({
             )}
           </div>
           <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/auth/reset-password"
-                className="ml-auto text-sm underline-offset-2 hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Input id="password" type="password" {...register("password")} />
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="Your password"
+              {...register("password")}
+            />
             {errors.password && (
               <p className="text-sm text-destructive">
                 {errors.password.message}
               </p>
+            )}
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder="Confirm your password"
+              {...register("confirmPassword")}
+            />
+            {errors.confirmPassword && (
+              <p className="text-sm text-destructive">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="role">Profile Type</Label>
+            <Select onValueChange={(value) => setValue("role", value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="professor">Professor</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.role && (
+              <p className="text-sm text-destructive">{errors.role.message}</p>
             )}
           </div>
 
@@ -268,12 +300,12 @@ export function LoginForm({
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
+            {isLoading ? "Signing up..." : "Sign up"}
           </Button>
           <div className="text-center text-sm">
-            Don't have an account?{" "}
-            <Link href="/auth/signup" className="underline underline-offset-4">
-              Sign up
+            Already have an account?{" "}
+            <Link href="/auth/login" className="underline underline-offset-4">
+              Sign in
             </Link>
           </div>
         </div>
