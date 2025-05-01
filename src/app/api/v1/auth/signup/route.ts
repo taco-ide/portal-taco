@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, email, password, role, turnstileToken } = validation.data;
+    const { name, email, password, turnstileToken } = validation.data;
 
     // Verificar token do Turnstile em produção
     if (shouldUse2FA() && turnstileToken) {
@@ -70,7 +70,6 @@ export async function POST(request: NextRequest) {
         name,
         email,
         passwordHash,
-        role,
         isActive: true,
       },
     });
@@ -130,7 +129,6 @@ export async function POST(request: NextRequest) {
             id: newUser.userId,
             email: newUser.email,
             name: newUser.name,
-            role: newUser.role,
           },
         },
         { status: 201 }
