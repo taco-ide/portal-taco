@@ -1,8 +1,7 @@
 import { compare, hash } from "bcrypt";
 import { Resend } from "resend";
-import { SERVER_AUTH_CONFIG, SHARED_AUTH_CONFIG, isProduction } from "./config";
+import { SERVER_AUTH_CONFIG, isProduction } from "./config";
 import { PrismaClient } from "@prisma/client";
-import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 const resend = new Resend(SERVER_AUTH_CONFIG.RESEND_API_KEY);

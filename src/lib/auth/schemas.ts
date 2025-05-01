@@ -51,9 +51,6 @@ export const signupSchema = z
     confirmPassword: z
       .string()
       .min(6, "A senha deve ter pelo menos 6 caracteres"),
-    role: z.string({
-      required_error: "Selecione um tipo de perfil",
-    }),
     turnstileToken: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
