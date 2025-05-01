@@ -13,7 +13,8 @@ model User {
   passwordHash        String            @map("password_hash")
   name                String?       
   isActive            Boolean           @default(true)                @map("is_active")
-  role                String            @default("user")
+  roleId              Int               @default(1) @map("role_id")
+  role                Role              @relation(fields: [roleId], references: [id])
   verificationCodes   VerificationCode[]
   createdAt           DateTime          @default(now())               @map("created_at")
   updatedAt           DateTime          @updatedAt                    @map("updated_at")
@@ -29,4 +30,11 @@ model VerificationCode {
   expiresAt           DateTime          @map("expires_at")
   createdAt           DateTime          @default(now())               @map("created_at")
   @@map("verification_codes")
+}
+
+model Role {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  users User[]
+  @@map("roles")
 }
