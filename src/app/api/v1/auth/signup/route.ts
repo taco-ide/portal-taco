@@ -1,21 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
-import { setSecureCookie } from "@/lib/auth/server-cookies";
+import { shouldUse2FA } from "@/lib/auth/config";
 import { hashPassword } from "@/lib/auth/utils";
 import { signupSchema } from "@/lib/auth/schemas";
-import { createSessionToken, createVerificationToken } from "@/lib/auth/jwt";
+import { createVerificationToken } from "@/lib/auth/jwt";
 import {
   generateVerificationCode,
   saveVerificationCode,
   sendVerificationEmail,
   verifyTurnstileToken,
 } from "@/lib/auth/utils";
-import {
-  SERVER_AUTH_CONFIG,
-  SHARED_AUTH_CONFIG,
-  isProduction,
-} from "@/lib/auth/config";
+import { SHARED_AUTH_CONFIG, isProduction } from "@/lib/auth/config";
 import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
@@ -86,7 +81,7 @@ export async function POST(request: NextRequest) {
       );
 
       // Enviar e-mail com o código
-      await sendVerificationEmail(newUser.email, code, "2FA");
+      await sendVerificationEmail(newUser.email, code);
 
       // Criar token de verificação
       const verificationToken = await createVerificationToken({

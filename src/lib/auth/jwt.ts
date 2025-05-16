@@ -53,6 +53,7 @@ export async function verifyToken<T>(token: string): Promise<T> {
     const { payload } = await jwtVerify(token, secretKey);
     return payload as T;
   } catch (error) {
+    console.error("Error verifying token:", error);
     throw new Error("Token inválido ou expirado");
   }
 }

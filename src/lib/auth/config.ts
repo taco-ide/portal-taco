@@ -5,7 +5,7 @@ export const SHARED_AUTH_CONFIG = {
   SESSION_TOKEN_NAME: "session_token",
   VERIFICATION_TOKEN_NAME: "verification_token",
   VERIFICATION_ID_NAME: "verification_id",
-  SESSION_EXPIRATION: 60 * 60 * 8, // 8 horas em segundos
+  SESSION_EXPIRATION: 60 * 60 * 24 * 7, // 7 dias em segundos
   VERIFICATION_EXPIRATION: 60 * 5, // 5 minutos em segundos
   TURNSTILE_SITE_KEY:
     process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || "",

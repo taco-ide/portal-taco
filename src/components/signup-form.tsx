@@ -10,7 +10,7 @@ import { SignupFormData, signupSchema } from "@/lib/auth/schemas";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import { SHARED_AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
-import Script from "next/script";
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -26,7 +26,14 @@ declare global {
   interface Window {
     onTurnstileVerify: (token: string) => void;
     turnstile?: {
-      render: (container: string | HTMLElement, options: any) => string;
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          callback: string;
+          "refresh-expired"?: string;
+        }
+      ) => string;
       reset: (widgetId: string) => void;
       getResponse: (widgetId: string) => string | null;
     };
@@ -157,7 +164,6 @@ export function SignupForm({
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });

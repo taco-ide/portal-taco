@@ -11,13 +11,7 @@ export interface ChatMessageListProps
 
 const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
   ({ className, children, smooth = false, ...props }, ref) => {
-    const {
-      scrollRef,
-      isAtBottom,
-      autoScrollEnabled,
-      scrollToBottom,
-      disableAutoScroll,
-    } = useAutoScroll({
+    const { isAtBottom, scrollToBottom } = useAutoScroll({
       smooth,
       content: children,
     });
@@ -26,7 +20,10 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
       <div className="relative w-full h-full">
         <div
           ref={ref}
-          className={cn("flex flex-col w-full h-full p-4 overflow-y-auto", className)}
+          className={cn(
+            "flex flex-col w-full h-full p-4 overflow-y-auto",
+            className
+          )}
           {...props}
         >
           <div className="flex flex-col gap-6">{children}</div>

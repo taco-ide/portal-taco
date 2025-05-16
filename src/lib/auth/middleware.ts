@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SHARED_AUTH_CONFIG } from "./config";
 import { verifySessionToken } from "./jwt";
-import { cookies } from "next/headers";
 
 // Default public paths if none are provided
 const DEFAULT_PUBLIC_PATHS = [
@@ -40,6 +39,7 @@ export async function authMiddleware(
     await verifySessionToken(sessionToken);
     return NextResponse.next();
   } catch (error) {
+    console.error("Error verifying session token:", error);
     return handleInvalidToken(request, isApiRequest, pathname);
   }
 }
@@ -120,21 +120,22 @@ export async function checkRole(request: NextRequest, allowedRoles: string[]) {
     const payload = await verifySessionToken(sessionToken);
     return allowedRoles.includes(payload.role);
   } catch (error) {
+    console.error("Error verifying session token:", error);
     return false;
   }
 }
 
-// Middleware para verificar se o usuário é admin
-export async function adminMiddleware(req: NextRequest) {
-  try {
-    // Obter token da sessão dos cookies
-    const sessionToken = req.cookies.get(
-      SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME
-    )?.value;
+// // Middleware para verificar se o usuário é admin
+// export async function adminMiddleware(req: NextRequest) {
+//   try {
+//     // Obter token da sessão dos cookies
+//     const sessionToken = req.cookies.get(
+//       SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME
+//     )?.value;
 
-    // Implementação futura
-    return NextResponse.next();
-  } catch (error) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-}
+//     // Implementação futura
+//     return NextResponse.next();
+//   } catch (error) {
+//     return NextResponse.redirect(new URL("/login", req.url));
+//   }
+// }

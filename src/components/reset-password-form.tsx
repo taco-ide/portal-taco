@@ -13,7 +13,6 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import { SHARED_AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
-import Script from "next/script";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -22,7 +21,14 @@ declare global {
   interface Window {
     onTurnstileVerify: (token: string) => void;
     turnstile?: {
-      render: (container: string | HTMLElement, options: any) => string;
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          callback: string;
+          "refresh-expired"?: string;
+        }
+      ) => string;
       reset: (widgetId: string) => void;
       getResponse: (widgetId: string) => string | null;
     };
@@ -36,8 +42,8 @@ export function ResetPasswordForm({
   const { requestPasswordReset, resetPassword, error, isLoading } = useAuth();
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [step, setStep] = useState<"request" | "reset">("request");
-  const [email, setEmail] = useState("");
-  const [requestSuccess, setRequestSuccess] = useState(false);
+  const [, setEmail] = useState("");
+  const [, setRequestSuccess] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const turnstileWidgetId = useRef<string | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);

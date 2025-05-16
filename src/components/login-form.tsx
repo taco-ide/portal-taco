@@ -14,7 +14,6 @@ import {
   shouldUse2FA,
   isProduction,
 } from "@/lib/auth/config";
-import Script from "next/script";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -23,7 +22,14 @@ declare global {
   interface Window {
     onTurnstileVerify: (token: string) => void;
     turnstile?: {
-      render: (container: string | HTMLElement, options: any) => string;
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          callback: string;
+          "refresh-expired"?: string;
+        }
+      ) => string;
       reset: (widgetId: string) => void;
       getResponse: (widgetId: string) => string | null;
     };
@@ -271,7 +277,7 @@ export function LoginForm({
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
           <div className="text-center text-sm">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/auth/signup" className="underline underline-offset-4">
               Sign up
             </Link>

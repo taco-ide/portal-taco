@@ -4,7 +4,7 @@ import { useUser } from "@/contexts/UserContext";
 import { useState, useRef, useEffect } from "react";
 
 const Navbar = () => {
-  const { user, isLoading, getFirstName, logout } = useUser();
+  const { user, getFirstName, logout } = useUser();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +47,7 @@ const Navbar = () => {
             TACO
           </span> */}
         </div>
-        
+
         <div className="flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-3 relative" ref={dropdownRef}>

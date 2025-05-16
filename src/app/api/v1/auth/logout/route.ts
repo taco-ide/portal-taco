@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { SHARED_AUTH_CONFIG } from "@/lib/auth/config";
 import { cookies } from "next/headers";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Limpar o cookie de sessão
     cookies().delete(SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME);

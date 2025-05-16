@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import {
-  AUTH_CONFIG,
-  SERVER_AUTH_CONFIG,
-  SHARED_AUTH_CONFIG,
-  isProduction,
-} from "@/lib/auth/config";
-import { clearCookie, getCookie } from "@/lib/auth/server-cookies";
+import { AUTH_CONFIG, SHARED_AUTH_CONFIG } from "@/lib/auth/config";
+import { clearCookie } from "@/lib/auth/server-cookies";
 import { resetPasswordSchema } from "@/lib/auth/schemas";
 import { hashPassword, verifyCode } from "@/lib/auth/utils";
 import { verifyVerificationToken } from "@/lib/auth/jwt";
@@ -56,7 +51,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       clearCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
       clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
-
+      console.error("Erro na redefinição de senha:", error);
       return NextResponse.json(
         { error: "Sessão de redefinição expirada ou inválida" },
         { status: 401 }

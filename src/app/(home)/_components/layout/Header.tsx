@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
 
 const Header = () => {
   return (

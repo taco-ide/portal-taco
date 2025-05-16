@@ -1,8 +1,7 @@
 import { compare, hash } from "bcrypt";
 import { Resend } from "resend";
-import { SERVER_AUTH_CONFIG, SHARED_AUTH_CONFIG, isProduction } from "./config";
+import { SERVER_AUTH_CONFIG, isProduction } from "./config";
 import { PrismaClient } from "@prisma/client";
-import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 const resend = new Resend(SERVER_AUTH_CONFIG.RESEND_API_KEY);
@@ -44,7 +43,7 @@ export async function saveVerificationCode(
     RETURNING id
   `;
 
-  return (result as any)[0].id;
+  return (result as { id: number }[])[0].id;
 }
 
 // Verificar o código de verificação
@@ -56,7 +55,9 @@ export async function verifyCode(
     SELECT * FROM verification_codes WHERE id = ${codeId}
   `;
 
-  const verificationCode = (result as any)[0];
+  const verificationCode = (
+    result as { id: number; expires_at: Date; code: string }[]
+  )[0];
 
   if (!verificationCode) {
     return false;
@@ -81,11 +82,7 @@ export async function verifyCode(
 }
 
 // Enviar email com código de verificação
-export async function sendVerificationEmail(
-  email: string,
-  code: string,
-  name?: string
-) {
+export async function sendVerificationEmail(email: string, code: string) {
   try {
     // Em desenvolvimento, apenas simular o envio se não houver API key
     if (!isProduction() && !SERVER_AUTH_CONFIG.RESEND_API_KEY) {
@@ -93,7 +90,7 @@ export async function sendVerificationEmail(
       return { success: true };
     }
 
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: SERVER_AUTH_CONFIG.EMAIL_FROM,
       to: email,
       subject: "Seu código de verificação",
