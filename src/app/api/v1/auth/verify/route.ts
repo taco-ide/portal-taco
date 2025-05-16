@@ -2,15 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { verificationSchema } from "@/lib/auth/schemas";
 import {
   AUTH_CONFIG,
-  SERVER_AUTH_CONFIG,
   SHARED_AUTH_CONFIG,
   isProduction,
 } from "@/lib/auth/config";
-import {
-  clearCookie,
-  getCookie,
-  setSecureCookie,
-} from "@/lib/auth/server-cookies";
+import { clearCookie } from "@/lib/auth/server-cookies";
 import { verifyCode } from "@/lib/auth/utils";
 import { createSessionToken, verifyVerificationToken } from "@/lib/auth/jwt";
 import { PrismaClient } from "@prisma/client";
@@ -56,6 +51,7 @@ export async function POST(request: NextRequest) {
       clearCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
       clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
 
+      console.error("Erro na verificação:", error);
       return NextResponse.json(
         { error: "Sessão de verificação expirada ou inválida" },
         { status: 401 }

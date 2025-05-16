@@ -6,13 +6,6 @@ import {
   VerificationFormData,
 } from "@/lib/auth/schemas";
 
-interface User {
-  id: number;
-  email: string;
-  name?: string;
-  role: string;
-}
-
 export const useAuth = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
