@@ -18,7 +18,6 @@ interface FeatureSectionProps {
 const FeatureSection: FC<FeatureSectionProps> = ({
   title,
   description,
-  features,
   accentColor,
   position = "right",
 }) => (

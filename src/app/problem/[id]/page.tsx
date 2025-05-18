@@ -6,7 +6,9 @@ import ProblemDescription from "./_components/ProblemDescription";
 import InputPanel from "./_components/InputPanel";
 import ChatPanel from "./_components/ChatPanel";
 
-export default function ProblemPage({ params }: { params: { id: string } }) {
+export default function ProblemPage() {
+  // Future: we will get the id from the url
+  // const { id } = useParams();
   return (
     <div className="h-screen w-screen p-4 gap-4 bg-slate-900 text-white flex flex-col overflow-hidden">
       <Header />

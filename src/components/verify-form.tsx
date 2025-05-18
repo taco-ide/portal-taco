@@ -36,7 +36,7 @@ export function VerifyForm({
           <div className="flex flex-col items-center text-center">
             <h1 className="text-2xl font-bold">Two-Step Verification</h1>
             <p className="text-balance text-muted-foreground">
-              We've sent a verification code to your email. Please enter it
+              We&apos;ve sent a verification code to your email. Please enter it
               below.
             </p>
           </div>
