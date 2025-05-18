@@ -39,6 +39,9 @@ export async function POST(request: NextRequest) {
     // Buscar usuário pelo email
     const user = await prisma.user.findUnique({
       where: { email },
+      include: {
+        role: true,
+      },
     });
 
     // Verificar se o usuário existe
@@ -71,7 +74,7 @@ export async function POST(request: NextRequest) {
       userId: user.userId,
       email: user.email,
       name: user.name || undefined,
-      role: user.role,
+      role: user.role.name,
     });
 
     // Definir cookie com token de sessão
@@ -90,7 +93,7 @@ export async function POST(request: NextRequest) {
           id: user.userId,
           email: user.email,
           name: user.name,
-          role: user.role,
+          role: user.role.name,
         },
       },
       { status: 200 }
