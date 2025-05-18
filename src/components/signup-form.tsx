@@ -13,13 +13,6 @@ import { SHARED_AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 // Adicionar declaração de tipo para a função onTurnstileVerify no objeto Window
 declare global {
@@ -163,7 +156,6 @@ export function SignupForm({
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
