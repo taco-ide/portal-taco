@@ -11,12 +11,15 @@
     "services:up": "docker compose -p portal-taco -f infra/compose.yaml up -d",
     "services:stop": "docker compose -p portal-taco -f infra/compose.yaml stop",
     "services:down": "docker compose -p portal-taco -f infra/compose.yaml down",
+    "prisma:seed": "ts-node -r tsconfig-paths/register --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" infra/prisma/seed.ts",
+    "prisma:migrate:deploy": "npx prisma migrate deploy --schema=infra/prisma/schema.prisma",
+    "prisma:generate": "npx prisma generate --schema=infra/prisma/schema.prisma",
     "prisma:studio": "dotenv -e .env.development  -- npx prisma studio --schema=infra/prisma/schema.prisma",
-    "prisma:seed": "dotenv -e .env.development -- ts-node -r tsconfig-paths/register --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" infra/prisma/seed.ts",
+    "prisma:seed:dev": "dotenv -e .env.development -- ts-node -r tsconfig-paths/register --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" infra/prisma/seed.ts",
     "prisma:seedTest": "dotenv -e .env.development -- ts-node -r tsconfig-paths/register --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" infra/prisma/seedTest.ts",
     "prisma:migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev --schema=infra/prisma/schema.prisma",
-    "prisma:migrate:deploy": "dotenv -e .env.development -- npx prisma migrate deploy --schema=infra/prisma/schema.prisma",
-    "prisma:generate": "dotenv -e .env.development -- npx prisma generate --schema=infra/prisma/schema.prisma"
+    "prisma:migrate:deploy:dev": "dotenv -e .env.development -- npx prisma migrate deploy --schema=infra/prisma/schema.prisma",
+    "prisma:generate:dev": "dotenv -e .env.development -- npx prisma generate --schema=infra/prisma/schema.prisma"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",

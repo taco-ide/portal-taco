@@ -72,8 +72,8 @@ This command will automatically set up everything, but might take longer and cou
 ```bash
 # First time setup
 npm run services:up        # or: yarn services:up
-npm run prisma:migrate:dev # or: yarn prisma:migrate:dev
-npm run prisma:seed       # or: yarn prisma:seed
+npm run prisma:migrate:deploy:dev # or: yarn prisma:migrate:dev
+npm run prisma:seed:dev   # or: yarn prisma:seed:dev
 
 # For subsequent development
 npm run dev:next          # or: yarn dev:next
@@ -197,8 +197,8 @@ Este comando configurará tudo automaticamente, mas pode demorar mais e dificult
 ```bash
 # Configuração inicial
 npm run services:up        # ou: yarn services:up
-npm run prisma:migrate:dev # ou: yarn prisma:migrate:dev
-npm run prisma:seed       # ou: yarn prisma:seed
+npm run prisma:migrate:deploy:dev # ou: yarn prisma:migrate:dev
+npm run prisma:seed:dev   # ou: yarn prisma:seed:dev
 
 # Para desenvolvimento subsequente
 npm run dev:next          # ou: yarn dev:next
