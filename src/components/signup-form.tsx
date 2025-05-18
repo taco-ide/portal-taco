@@ -276,21 +276,6 @@ export function SignupForm({
               </p>
             )}
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="role">Profile Type</Label>
-            <Select onValueChange={(value) => setValue("role", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="student">Student</SelectItem>
-                <SelectItem value="professor">Professor</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.role && (
-              <p className="text-sm text-destructive">{errors.role.message}</p>
-            )}
-          </div>
 
           {isMounted && shouldUse2FA() && (
             <div className="flex justify-center">
