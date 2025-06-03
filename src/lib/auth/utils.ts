@@ -92,7 +92,7 @@ export async function sendVerificationEmail(email: string, code: string) {
 
     const { error } = await resend.emails.send({
       from: SERVER_AUTH_CONFIG.EMAIL_FROM,
-      to: email,
+      to: [email],
       subject: "Seu código de verificação",
       text: `Seu código de verificação é: ${code}. Este código expira em 5 minutos.`,
     });
