@@ -39,7 +39,7 @@ const FeatureSection: FC<FeatureSectionProps> = ({
 const Features = () => {
   const professorFeatures: FeatureCard[] = [
     {
-      title: "Gestão de Exercícios",
+      title: "Exercise Management",
       icon: (
         <svg
           className="w-8 h-8 text-[#4CAF50]"
@@ -56,14 +56,14 @@ const Features = () => {
         </svg>
       ),
       items: [
-        "Crie exercícios personalizados",
-        "Defina bibliotecas permitidas",
-        "Compartilhe publicamente ou privadamente",
-        "Poste respostas comentadas",
+        "Create custom exercises",
+        "Define allowed libraries",
+        "Share publicly or privately",
+        "Post commented answers",
       ],
     },
     {
-      title: "Gestão de Turmas",
+      title: "Class Management",
       icon: (
         <svg
           className="w-8 h-8 text-[#4CAF50]"
@@ -80,14 +80,14 @@ const Features = () => {
         </svg>
       ),
       items: [
-        "Crie e gerencie turmas",
-        "Acompanhe progresso individual",
-        "Notas automatizadas por IA",
-        "Dashboard de desempenho",
+        "Create and manage classes",
+        "Track individual progress",
+        "AI-automated grading",
+        "Performance dashboard",
       ],
     },
     {
-      title: "Análise de Dados",
+      title: "Data Analysis",
       icon: (
         <svg
           className="w-8 h-8 text-[#4CAF50]"
@@ -104,17 +104,17 @@ const Features = () => {
         </svg>
       ),
       items: [
-        "Dificuldades por categoria",
-        "Progresso da turma",
-        "Insights personalizados",
-        "Conteúdo mais assertivo",
+        "Difficulties by category",
+        "Class progress",
+        "Personalized insights",
+        "More assertive content",
       ],
     },
   ];
 
   const studentFeatures: FeatureCard[] = [
     {
-      title: "IDE Inteligente",
+      title: "Smart IDE",
       icon: (
         <svg
           className="w-8 h-8 text-[#FFB800]"
@@ -131,14 +131,14 @@ const Features = () => {
         </svg>
       ),
       items: [
-        "Feedback em tempo real",
-        "Suporte de IA personalizado",
-        "Dicas contextualizadas",
-        "Ambiente seguro",
+        "Real-time feedback",
+        "Personalized AI support",
+        "Contextualized tips",
+        "Safe environment",
       ],
     },
     {
-      title: "Aprendizado Adaptativo",
+      title: "Adaptive Learning",
       icon: (
         <svg
           className="w-8 h-8 text-[#FFB800]"
@@ -155,14 +155,14 @@ const Features = () => {
         </svg>
       ),
       items: [
-        "Exercícios da comunidade",
-        "Progresso personalizado",
-        "Aprenda no seu ritmo",
-        "Auxílio inteligente",
+        "Community exercises",
+        "Personalized progress",
+        "Learn at your own pace",
+        "Intelligent assistance",
       ],
     },
     {
-      title: "Recursos IA",
+      title: "AI Resources",
       icon: (
         <svg
           className="w-8 h-8 text-[#FFB800]"
@@ -179,10 +179,10 @@ const Features = () => {
         </svg>
       ),
       items: [
-        "LLM treinado para Python",
-        "Ajuda contextualizada",
-        "Sem respostas prontas",
-        "Foco no aprendizado",
+        "LLM trained for Python",
+        "Contextualized help",
+        "No ready-made answers",
+        "Focus on learning",
       ],
     },
   ];
@@ -222,10 +222,10 @@ const Features = () => {
   );
 
   return (
-    <section className="container mx-auto px-4 pt-16 pb-32" id="recursos">
+    <section className="container mx-auto px-4 pt-16 pb-32" id="features">
       <FeatureSection
-        title="Para Professores"
-        description="Ferramentas poderosas para criar, gerenciar e avaliar exercícios"
+        title="For Teachers"
+        description="Powerful tools to create, manage, and evaluate exercises"
         features={professorFeatures}
         accentColor="#4CAF50"
         position="right"
@@ -235,8 +235,8 @@ const Features = () => {
       </div>
 
       <FeatureSection
-        title="Para Alunos"
-        description="Ambiente interativo com suporte de IA para um aprendizado mais eficiente"
+        title="For Students"
+        description="Interactive environment with AI support for more efficient learning"
         features={studentFeatures}
         accentColor="#FFB800"
         position="left"

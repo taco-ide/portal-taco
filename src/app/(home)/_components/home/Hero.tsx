@@ -15,7 +15,8 @@ const Hero = () => {
             </h1>
           </div>
           <p className="text-xl sm:text-2xl mb-12 text-gray-300 animate-fadeInUp delay-200 leading-relaxed max-w-3xl mx-auto">
-            A revolutionary open-source platform that unites teachers, students and AI for more efficient and personalized learning.
+            A revolutionary open-source platform that unites teachers, students
+            and AI for more efficient and personalized learning.
           </p>
           <div className="flex gap-6 justify-center items-center flex-wrap animate-fadeInUp delay-400">
             <a
@@ -41,7 +42,7 @@ const Hero = () => {
               </span>
             </a>
             <a
-              href="#recursos"
+              href="#features"
               className="group relative px-8 py-4 rounded-full font-semibold text-white overflow-hidden"
             >
               <div className="absolute inset-0 w-full h-full transition-all duration-300 bg-gradient-to-r from-[#4CAF50] to-[#45a049] group-hover:opacity-90"></div>
@@ -66,7 +67,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Elementos decorativos de fundo */}
+      {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#4CAF50] rounded-full filter blur-[128px] opacity-20 animate-pulse"></div>
         <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-[#FFB800] rounded-full filter blur-[128px] opacity-10 animate-pulse delay-1000"></div>

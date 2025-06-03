@@ -22,8 +22,8 @@ const Header = () => {
         </div>
         <nav className="hidden sm:flex gap-8">
           {[
-            { name: "Resources", href: "#recursos" },
-            { name: "Collaborators", href: "#colaboradores" },
+            { name: "Features", href: "#features" },
+            { name: "Collaborators", href: "#collaborators" },
           ].map((item) => (
             <a
               key={item.name}

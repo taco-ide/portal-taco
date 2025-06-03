@@ -16,8 +16,8 @@ const Footer = () => {
             <span className="text-xl font-bold text-[#FFB800]">TACO-IDE</span>
           </div>
           <div className="flex gap-8 text-gray-400">
-            <a href="#recursos" className="hover:text-white transition-colors">
-              Recursos
+            <a href="#features" className="hover:text-white transition-colors">
+              Features
             </a>
             <a
               href="https://github.com/taco-ide"
@@ -29,7 +29,7 @@ const Footer = () => {
             </a>
           </div>
           <p className="text-gray-500 text-sm">
-            &copy; 2025 TACO. Todos os direitos reservados.
+            &copy; 2025 TACO. All rights reserved.
           </p>
         </div>
       </div>

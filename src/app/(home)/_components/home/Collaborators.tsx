@@ -12,7 +12,7 @@ const Collaborators = () => {
   const { collaborators } = collaboratorsData;
 
   return (
-    <section className="relative py-32 overflow-hidden" id="colaboradores">
+    <section className="relative py-32 overflow-hidden" id="collaborators">
       <div className="absolute inset-0 bg-gradient-to-b from-[#2a2f3e] to-[#1a1f2e]"></div>
       <div className="absolute inset-0"></div>
 
@@ -20,7 +20,7 @@ const Collaborators = () => {
         <div className="max-w-4xl mx-auto text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold mb-8">
             <span className="bg-gradient-to-r from-[#FFB800] to-[#FFA000] text-transparent bg-clip-text">
-              Nossos Colaboradores
+              Our Collaborators
             </span>
           </h2>
         </div>
