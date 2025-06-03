@@ -12,7 +12,7 @@ import {
 } from "@/lib/auth/schemas";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import { SHARED_AUTH_CONFIG, shouldUse2FA } from "@/lib/auth/config";
+import { SHARED_AUTH_CONFIG } from "@/lib/auth/config";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 

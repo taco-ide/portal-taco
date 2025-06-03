@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { shouldUse2FA } from "@/lib/auth/config";
 import { verifyPassword } from "@/lib/auth/utils";
 import { loginSchema } from "@/lib/auth/schemas";
 import { createSessionToken } from "@/lib/auth/jwt";
