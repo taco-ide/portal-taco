@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
 
     const { email, password, turnstileToken } = validation.data;
 
-    // Verificar token do Turnstile em produção
-    if (shouldUse2FA() && turnstileToken) {
+    // Verificar token do Turnstile
+    if (turnstileToken) {
       const isValidTurnstile = await verifyTurnstileToken(turnstileToken);
       if (!isValidTurnstile) {
         return NextResponse.json(

@@ -48,7 +48,7 @@ export function LoginForm({
 
   const renderTurnstile = useCallback(() => {
     if (
-      !shouldUse2FA() ||
+      !SHARED_AUTH_CONFIG.TURNSTILE_SITE_KEY ||
       !isMounted ||
       !turnstileContainerRef.current ||
       !window.turnstile
@@ -150,8 +150,8 @@ export function LoginForm({
     console.log("Environment Debug Info:", envInfo);
 
     // Carregar o script após um pequeno atraso para garantir que o DOM esteja pronto
-    if (shouldUse2FA()) {
-      console.log("Should use 2FA, loading Turnstile script...");
+    if (SHARED_AUTH_CONFIG.TURNSTILE_SITE_KEY) {
+      console.log("Turnstile site key is present, loading Turnstile script...");
       setTimeout(() => {
         loadTurnstileScript();
       }, 200);
@@ -181,7 +181,7 @@ export function LoginForm({
       turnstileToken ? "Present" : "Missing"
     );
 
-    if (shouldUse2FA() && !turnstileToken) {
+    if (SHARED_AUTH_CONFIG.TURNSTILE_SITE_KEY && !turnstileToken) {
       // Tentar recuperar o token novamente do Turnstile se estiver disponível
       try {
         if (window.turnstile && turnstileWidgetId.current) {
@@ -260,7 +260,7 @@ export function LoginForm({
             )}
           </div>
 
-          {isMounted && shouldUse2FA() && (
+          {isMounted && SHARED_AUTH_CONFIG.TURNSTILE_SITE_KEY && (
             <div className="flex justify-center">
               <div ref={turnstileContainerRef} id="turnstile-widget"></div>
             </div>
