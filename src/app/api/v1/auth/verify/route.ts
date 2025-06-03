@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const validation = verificationSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { error: "Código inválido", details: validation.error.issues },
+        { error: "Invalid code", details: validation.error.issues },
         { status: 400 }
       );
     }
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     if (!verificationToken || !verificationId) {
       return NextResponse.json(
-        { error: "Sessão de verificação expirada ou inválida" },
+        { error: "Verification session expired or invalid" },
         { status: 401 }
       );
     }
@@ -51,9 +51,9 @@ export async function POST(request: NextRequest) {
       clearCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
       clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
 
-      console.error("Erro na verificação:", error);
+      console.error("Error verifying:", error);
       return NextResponse.json(
-        { error: "Sessão de verificação expirada ou inválida" },
+        { error: "Verification session expired or invalid" },
         { status: 401 }
       );
     }
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     const isValidCode = await verifyCode(parseInt(verificationId), code);
     if (!isValidCode) {
       return NextResponse.json(
-        { error: "Código inválido ou expirado" },
+        { error: "Invalid or expired code" },
         { status: 400 }
       );
     }
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
 
       return NextResponse.json(
-        { error: "Usuário não encontrado ou desativado" },
+        { error: "User not found or disabled" },
         { status: 404 }
       );
     }
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     cookies().delete(SHARED_AUTH_CONFIG.VERIFICATION_ID_NAME);
 
     return NextResponse.json({
-      message: "Verificação bem-sucedida",
+      message: "Verification successful",
       user: {
         id: user.userId,
         email: user.email,
@@ -116,9 +116,9 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Erro na verificação:", error);
+    console.error("Error verifying:", error);
     return NextResponse.json(
-      { error: "Erro interno do servidor" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   } finally {

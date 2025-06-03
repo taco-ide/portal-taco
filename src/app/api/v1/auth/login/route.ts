@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const validation = loginSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { error: "Dados de login inválidos", details: validation.error.issues },
+        { error: "Invalid login data", details: validation.error.issues },
         { status: 400 }
       );
     }
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       const isValidTurnstile = await verifyTurnstileToken(turnstileToken);
       if (!isValidTurnstile) {
         return NextResponse.json(
-          { error: "Verificação de segurança falhou" },
+          { error: "Security verification failed" },
           { status: 400 }
         );
       }
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     // Verificar se o usuário existe
     if (!user) {
       return NextResponse.json(
-        { error: "Email ou senha incorretos" },
+        { error: "Invalid email or password" },
         { status: 401 }
       );
     }
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     // Verificar se o usuário está ativo
     if (!user.isActive) {
       return NextResponse.json(
-        { error: "Conta desativada. Entre em contato com o suporte." },
+        { error: "Account disabled. Contact support." },
         { status: 403 }
       );
     }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     const isValidPassword = await verifyPassword(password, user.passwordHash);
     if (!isValidPassword) {
       return NextResponse.json(
-        { error: "Email ou senha incorretos" },
+        { error: "Invalid email or password" },
         { status: 401 }
       );
     }
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Login bem-sucedido",
+        message: "Login successful",
         user: {
           id: user.userId,
           email: user.email,
@@ -98,9 +98,9 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Erro no login:", error);
+    console.error("Error logging in:", error);
     return NextResponse.json(
-      { error: "Erro interno do servidor" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   } finally {

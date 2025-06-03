@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const validation = resetPasswordSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { error: "Dados inválidos", details: validation.error.issues },
+        { error: "Invalid data", details: validation.error.issues },
         { status: 400 }
       );
     }
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     if (!verificationToken || !verificationId) {
       return NextResponse.json(
-        { error: "Sessão de redefinição expirada ou inválida" },
+        { error: "Reset session expired or invalid" },
         { status: 401 }
       );
     }
@@ -46,14 +46,14 @@ export async function POST(request: NextRequest) {
 
       // Verificar se é um token de redefinição de senha
       if (tokenPayload.type !== "PASSWORD_RESET") {
-        throw new Error("Tipo de token inválido");
+        throw new Error("Invalid token type");
       }
     } catch (error) {
       clearCookie(AUTH_CONFIG.VERIFICATION_TOKEN_NAME);
       clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
-      console.error("Erro na redefinição de senha:", error);
+      console.error("Error resetting password:", error);
       return NextResponse.json(
-        { error: "Sessão de redefinição expirada ou inválida" },
+        { error: "Reset session expired or invalid" },
         { status: 401 }
       );
     }
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     const isValidCode = await verifyCode(parseInt(verificationId), code);
     if (!isValidCode) {
       return NextResponse.json(
-        { error: "Código inválido ou expirado" },
+        { error: "Invalid or expired code" },
         { status: 400 }
       );
     }
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       clearCookie(AUTH_CONFIG.VERIFICATION_ID_NAME);
 
       return NextResponse.json(
-        { error: "Usuário não encontrado ou desativado" },
+        { error: "User not found or disabled" },
         { status: 404 }
       );
     }
@@ -96,12 +96,12 @@ export async function POST(request: NextRequest) {
     cookies().delete(SHARED_AUTH_CONFIG.VERIFICATION_ID_NAME);
 
     return NextResponse.json({
-      message: "Senha redefinida com sucesso",
+      message: "Password reset successful",
     });
   } catch (error) {
-    console.error("Erro na redefinição de senha:", error);
+    console.error("Error resetting password:", error);
     return NextResponse.json(
-      { error: "Erro interno do servidor" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   } finally {

@@ -86,25 +86,25 @@ export async function sendVerificationEmail(email: string, code: string) {
   try {
     // Em desenvolvimento, apenas simular o envio se não houver API key
     if (!isProduction() && !SERVER_AUTH_CONFIG.RESEND_API_KEY) {
-      console.log(`[DEV] Código de verificação para ${email}: ${code}`);
+      console.log(`[DEV] Verification code for ${email}: ${code}`);
       return { success: true };
     }
 
     const { error } = await resend.emails.send({
       from: SERVER_AUTH_CONFIG.EMAIL_FROM,
       to: [email],
-      subject: "Seu código de verificação",
-      text: `Seu código de verificação é: ${code}. Este código expira em 5 minutos.`,
+      subject: "Your verification code",
+      text: `Your verification code is: ${code}. This code expires in 5 minutes.`,
     });
 
     if (error) {
-      console.error("Erro ao enviar e-mail:", error);
+      console.error("Error sending email:", error);
       return { success: false };
     }
 
     return { success: true };
   } catch (error) {
-    console.error("Erro ao enviar e-mail:", error);
+    console.error("Error sending email:", error);
     return { success: false };
   }
 }
@@ -127,7 +127,7 @@ export async function verifyTurnstileToken(token: string) {
     const data = await response.json();
     return data.success === true;
   } catch (error) {
-    console.error("Erro ao verificar token do Turnstile:", error);
+    console.error("Error verifying Turnstile token:", error);
     return false;
   }
 }

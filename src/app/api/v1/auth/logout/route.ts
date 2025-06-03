@@ -7,14 +7,11 @@ export async function POST() {
     // Limpar o cookie de sessão
     cookies().delete(SHARED_AUTH_CONFIG.SESSION_TOKEN_NAME);
 
-    return NextResponse.json(
-      { message: "Logout bem-sucedido" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Logout successful" }, { status: 200 });
   } catch (error) {
-    console.error("Erro ao fazer logout:", error);
+    console.error("Error logging out:", error);
     return NextResponse.json(
-      { error: "Erro ao processar logout" },
+      { error: "Error processing logout" },
       { status: 500 }
     );
   }

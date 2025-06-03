@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         {
-          error: "Dados de registro inválidos",
+          error: "Invalid registration data",
           details: validation.error.issues,
         },
         { status: 400 }
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       const isValidTurnstile = await verifyTurnstileToken(turnstileToken);
       if (!isValidTurnstile) {
         return NextResponse.json(
-          { error: "Verificação de segurança falhou" },
+          { error: "Security verification failed" },
           { status: 400 }
         );
       }
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "Este email já está registrado" },
+        { error: "This email is already registered" },
         { status: 409 }
       );
     }
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         {
-          message: "Código de verificação enviado",
+          message: "Verification code sent",
           requireVerification: true,
         },
         { status: 201 }
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
       // Em desenvolvimento: Criar usuário sem verificação
       return NextResponse.json(
         {
-          message: "Usuário criado com sucesso",
+          message: "User created successfully",
           user: {
             id: newUser.userId,
             email: newUser.email,
@@ -130,9 +130,9 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error("Erro ao registrar usuário:", error);
+    console.error("Error registering user:", error);
     return NextResponse.json(
-      { error: "Erro interno do servidor" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   } finally {

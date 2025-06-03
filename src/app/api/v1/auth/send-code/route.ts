@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     if (!user || !user.isActive) {
       return NextResponse.json(
         {
-          message: "Se o email existir, um código de redefinição será enviado",
+          message: "If the email exists, a reset code will be sent",
         },
         { status: 200 }
       );
@@ -92,14 +92,11 @@ export async function POST(request: NextRequest) {
       secure: isProduction(),
     });
 
-    return NextResponse.json(
-      { message: "Código de redefinição enviado" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Reset code sent" }, { status: 200 });
   } catch (error) {
-    console.error("Erro ao enviar código:", error);
+    console.error("Error sending code:", error);
     return NextResponse.json(
-      { error: "Erro interno do servidor" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   } finally {
