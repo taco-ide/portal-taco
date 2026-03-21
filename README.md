@@ -38,7 +38,7 @@ TACO-IDE is an intelligent platform designed to help teachers create and manage 
 
 ```bash
 git clone https://github.com/taco-ide/portal-taco.git
-cd taco
+cd portal-taco
 ```
 
 2. Install dependencies:
