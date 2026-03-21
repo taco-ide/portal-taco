@@ -163,7 +163,7 @@ O TACO-IDE é uma plataforma inteligente projetada para ajudar professores a cri
 
 ```bash
 git clone https://github.com/taco-ide/portal-taco.git
-cd taco
+cd portal-taco
 ```
 
 2. Instale as dependências:
