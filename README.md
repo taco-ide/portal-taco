@@ -37,7 +37,7 @@ TACO-IDE is an intelligent platform designed to help teachers create and manage 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/taco-ide/taco.git
+git clone https://github.com/taco-ide/portal-taco.git
 cd taco
 ```
 
@@ -162,7 +162,7 @@ O TACO-IDE é uma plataforma inteligente projetada para ajudar professores a cri
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/taco-ide/taco.git
+git clone https://github.com/taco-ide/portal-taco.git
 cd taco
 ```
 
